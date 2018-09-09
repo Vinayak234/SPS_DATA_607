@@ -1,0 +1,103 @@
+---
+title: 'DATA 607: Week 1 Loading Data into a Data Frame'
+author: "VINAYAK PATEL"
+date: "September 2, 2018"
+output: html_document
+---
+
+
+# **GET DATA FROM MUSHROOMS DATA SOURCE** 
+
+
+
+```{r}
+Mushrooms_link <- read.csv(url("https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data"))
+Mushrooms_data <- as.data.frame(Mushrooms_link)
+names(Mushrooms_data) = c("EDIBILITY", "CAP_SHAPE", "CAP_SURFACE", "CAP_COLOR", "BRUISES", "ODOR", "GILL_ATTACHMENT", "GILL_SPACING", "GILL_SIZE", "GILL_COLOR", "STALK_SHAPE", "STALK_ROOT", "STALK_SURFACE_ABOVE_RING", "STALK_SURFACE_BELOW_RING", "STALK_COLOR_ABOVE_RING", "STALK_COLOR_ABOVE_RING", "VEIL_TYPE", "VEIL_COLOR", "RING_NUMBER", "RING_TYPE", "SPORE_PRINT_COLOR", "POPULATION", "HABITAT")
+head(Mushrooms_data)
+
+```
+
+# **SUBSET**
+
+```{r}
+final_data_Column <- subset(Mushrooms_data, select = EDIBILITY:ODOR)
+head(final_data_Column)
+```
+
+
+# **REPLACE THE ABBREVIATIONS USED IN THE DATA**
+
+### **EDIBILITY**
+```{r}
+final_data_Column$EDIBILITY = ifelse( final_data_Column$EDIBILITY == "p" , "POISONOUS", "EDIBLE")
+
+```
+
+### **CAP SHAPE**
+```{r}
+levels(final_data_Column$`CAP_SHAPE`) <- c(levels(final_data_Column$`CAP_SHAPE`), c("BELL","CONICAL","CONVEX","FLAT","KNOBBED","SUNKEN"))
+final_data_Column$`CAP_SHAPE`[final_data_Column$`CAP_SHAPE` == "b"] <- "BELL"
+final_data_Column$`CAP_SHAPE`[final_data_Column$`CAP_SHAPE` == "c"] <- "CONICAL"
+final_data_Column$`CAP_SHAPE`[final_data_Column$`CAP_SHAPE` == "x"] <- "CONVEX"
+final_data_Column$`CAP_SHAPE`[final_data_Column$`CAP_SHAPE` == "f"] <- "FLAT"
+final_data_Column$`CAP_SHAPE`[final_data_Column$`CAP_SHAPE` == "k"] <- "KNOBBED"
+final_data_Column$`CAP_SHAPE`[final_data_Column$`CAP_SHAPE` == "s"] <- "SUNKEN"
+
+```
+
+### **CAP SURFACE**
+```{r}
+
+levels(final_data_Column$`CAP_SURFACE`) <- c(levels(final_data_Column$`CAP_SURFACE`), c("FIBROUS", "GROOVES", "SCALY", "SMOOTH"))
+final_data_Column$`CAP_SURFACE`[final_data_Column$`CAP_SURFACE` == "f"] <- "FIBROUS"
+final_data_Column$`CAP_SURFACE`[final_data_Column$`CAP_SURFACE` == "g"] <- "GROOVES"
+final_data_Column$`CAP_SURFACE`[final_data_Column$`CAP_SURFACE` == "y"] <- "SCALY"
+final_data_Column$`CAP_SURFACE`[final_data_Column$`CAP_SURFACE` == "s"] <- "SMOOTH"
+
+
+```
+
+### **CAP COLOR**
+
+```{r}
+levels(final_data_Column$`CAP_COLOR`) <- c(levels(final_data_Column$`CAP_COLOR`), c("BROWN", "BUFF", "CINNAMON", "GRAY", "GREEN", "PINK", "PURPLE", "RED", "WHITE", "YELLOW"))
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "n"] <- "BROWN"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "b"] <- "BUFF"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "c"] <- "CINNAMON"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "g"] <- "GRAY"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "r"] <- "GREEN"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "p"] <- "PINK"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "u"] <- "PURPLE"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "e"] <- "RED"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "w"] <- "WHITE"
+final_data_Column$`CAP_COLOR`[final_data_Column$`CAP_COLOR` == "y"] <- "YELLOW"
+
+```
+
+### **BRUISES**
+```{r}
+
+final_data_Column$BRUISES = ifelse( final_data_Column$BRUISES == "t" , "BRUISES", "NO")
+
+
+```
+
+### **ODOR**
+```{r}
+levels(final_data_Column$`ODOR`) <- c(levels(final_data_Column$`ODOR`), c("ALMOND", "ANISE", "CREOSOTE", "FISHY", "FOUL", "MUSTY", "NONE", "PUNGENT", "SPICY"))
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "a"] <- "ALMOND"
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "l"] <- "ANISE"
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "c"] <- "CREOSOTE"
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "y"] <- "FISHY"
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "m"] <- "MUSTY"
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "n"] <- "NONE"
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "p"] <- "PUNGENT"
+final_data_Column$`ODOR`[final_data_Column$`ODOR` == "s"] <- "SPICY"
+
+```
+
+# **FINAL RESULT**
+```{r}
+head(final_data_Column)
+```
