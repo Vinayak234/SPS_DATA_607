@@ -1,0 +1,67 @@
+---
+title: "DATA 607:  R and MySQL, Week2HW"
+author: "VINAYAK PATEL"
+date: "September 9, 2018"
+output: html_document
+---
+
+# **Week 2 Assignment - SQL and R **
+## **Introduction**
+we are trying to find highly rated movie. 
+
+* The following packages are loaded first if required:
+  + DT
+  + RMySQL
+  + DBI
+  + ggplot2
+
+```{r echo=FALSE}
+if (!require("DT")) install.packages('DT')
+if (!require("RMySQL")) install.packages('RMySQL')
+if (!require("ggplot2")) install.packages('ggplot2')
+```
+
+## **Load data**
+To load the SQL data into R, the dbConnect and dbGetQuery functions are used from the RMySQL package.
+
+```{r}
+connString = dbConnect(MySQL(), user='root', password = 'tester', dbname='moviesdb', host='localhost')
+dbListTables(connString)
+
+movie_ratings.df <- dbGetQuery(connString, "SELECT p.first_name, p.last_name, m.movie_name, r.ratings FROM moviesdb.reviewer p
+	LEFT JOIN moviesdb.reviews r
+		ON p.reviewer_id = r.reviewer_id
+	LEFT JOIN moviesdb.movie_table m
+		ON m.movie_id = r.movie_id
+	ORDER BY m.movie_name")
+
+
+movies <- dbGetQuery(connString, "select movie_name as Movie from movie_table")
+
+```
+## **Recent movies**
+
+```{r}
+datatable(movies, options = list(pageLength = 6))
+```
+## **Rating**
+```{r}
+movie_ratings.df
+```
+## **Graph**
+
+```{r}
+
+movie_ratings.df$movie_name <- as.factor(movie_ratings.df$movie_name)
+ggplot(movie_ratings.df) + geom_bar(aes(movie_name, ratings, fill=movie_name), stat="summary", fun.y="mean") + labs(x="Movies", y="Avg.Ratings", title="") + theme(axis.text.x=element_blank())
+
+```
+
+
+
+
+## *Conclusion*
+**Result suggests that Avengers Infinity War is highly rated movie among my friends.**
+
+![](https://upload.wikimedia.org/wikipedia/en/4/4d/Avengers_Infinity_War_poster.jpg)
+
