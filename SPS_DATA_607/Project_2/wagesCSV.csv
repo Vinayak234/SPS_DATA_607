@@ -1,0 +1,680 @@
+SOCCode,Title,Employment,Mean,Median,Entry,Experienced**
+ 11-0000,Management Occupations,249290,177490,156350,86230,223130
+ 11-1011, Chief Executives,5420,261580,,,
+ 11-1021, General and Operations Managers,78000,179900,159020,76290,231700
+ 11-1031, Legislators,,143760,139130,109860,160710
+ 11-2011, Advertising and Promotions Managers,5290,182060,164800,97030,224580
+ 11-2021, Marketing Managers,11970,208560,192370,127360,249160
+ 11-2022, Sales Managers,12970,226010,212230,126830,275610
+ 11-2031, Public Relations and Fundraising Managers,4500,181870,162330,103350,221130
+ 11-3011, Administrative Services Managers,10070,148580,136710,89790,177970
+ 11-3021, Computer and Information Systems Managers,16830,211000,192020,129190,251910
+ 11-3031,Financial Managers,27760,230970,,131070,280920
+ 11-3051, Industrial Production Managers,940,156950,142980,84690,193080
+ 11-3061, Purchasing Managers,1760,157440,144700,92550,189880
+ 11-3071,"Transportation, Storage, and Distribution Managers",1500,119630,116030,83920,137480
+ 11-3111, Compensation and Benefits Managers,1010,171670,152130,105990,204510
+ 11-3121, Human Resources Managers,6730,151980,130760,83490,186230
+ 11-3131, Training and Development Managers,2060,157460,146330,94100,189140
+ 11-9021, Construction Managers,6550,129440,118540,73810,157250
+ 11-9031,"Education Administrators, Preschool and Childcare Center/Program",2120,82020,74720,54940,95560
+ 11-9032,"Education Administrators, Elementary and Secondary School",8470,124810,122250,88340,143050
+ 11-9033," Education Administrators, Postsecondary",5750,123590,106960,70430,150160
+ 11-9039," Education Administrators, All Other",910,111410,100940,57240,138490
+ 11-9041, Architectural and Engineering Managers,2670,167670,153450,112760,195130
+ 11-9051,Food Service Managers,2970,82060,77170,54960,95610
+ 11-9061, Funeral Service Managers,,100230,113130,64240,118230
+ 11-9081,Lodging Managers,,123040,106380,84430,142340
+ 11-9111, Medical and Health Services Managers,12480,147360,128850,85540,178270
+ 11-9121, Natural Sciences Managers,710,160080,128640,84650,197790
+ 11-9141,"Property, Real Estate, and Community Association Managers",5420,123330,98220,70340,149820
+ 11-9151, Social and Community Service Managers,6010,96280,92190,64840,111990
+ 11-9161, Emergency Management Directors,,135460,137360,90390,158000
+ 11-9199," Managers, All Other",7780,146880,129630,78380,181130
+ 13-0000,Business and Financial Operations Occupations,332220,108230,90620,56000,134340
+ 13-1011,"Agents and Business Managers of Artists, Performers, and Athletes",2760,102650,75910,44150,131900
+ 13-1020,Buyers and Purchasing Agents,9970,78300,71850,47980,93460
+ 13-1031," Claims Adjusters, Examiners, and Investigators",7060,78550,77080,51860,91890
+ 13-1041, Compliance Officers,10100,85520,83700,52530,102010
+ 13-1051, Cost Estimators,3250,87320,81260,45720,108120
+ 13-1071, Human Resources Specialists,19790,84100,75640,49780,101260
+ 13-1075, Labor Relations Specialists,3780,83840,69680,49180,101170
+ 13-1081, Logisticians,1210,75920,68690,51240,88260
+ 13-1111, Management Analysts,27100,117690,103820,63820,144620
+ 13-1121," Meeting, Convention, and Event Planners",6630,70830,62250,42380,85050
+ 13-1131, Fundraisers,4180,71370,69010,44620,84740
+ 13-1141,"Compensation, Benefits, and Job Analysis Specialists",5310,83480,79320,60610,94920
+ 13-1151, Training and Development Specialists,10920,74070,67910,39260,91480
+ 13-1161,Market Research Analysts and Marketing Specialists,41730,83370,76760,49230,100440
+ 13-1199," Business Operations Specialists, All Other",13500,90390,83100,54100,108530
+ 13-2011, Accountants and Auditors,67470,105880,91610,59430,129100
+ 13-2021, Appraisers and Assessors of Real Estate,,70400,65340,37960,86620
+ 13-2031, Budget Analysts,1440,81520,77470,57120,93720
+ 13-2041, Credit Analysts,5670,137870,122980,74840,169390
+ 13-2051, Financial Analysts,45410,144120,120070,77990,177180
+ 13-2052, Personal Financial Advisors,21620,182930,162660,78250,235270
+ 13-2053, Insurance Underwriters,4050,110310,94980,59560,135680
+ 13-2061, Financial Examiners,5610,123760,111160,74260,148510
+ 13-2071, Credit Counselors,1030,60600,53410,41300,70250
+ 13-2072, Loan Officers,6270,136210,117660,59510,174560
+ 13-2081," Tax Examiners and Collectors, and Revenue Agents",1140,89060,86790,61350,102920
+ 13-2082,Tax Preparers,1560,65340,67850,27340,84350
+ 13-2099," Financial Specialists, All Other",2970,120190,105670,64700,147940
+ 15-0000,Computer and Mathematical Occupations,145990,107540,100950,59470,131570
+ 15-1111, Computer and Information Research Scientists,690,143080,132460,97580,165830
+ 15-1121, Computer Systems Analysts,25320,117010,110690,73250,138890
+ 15-1122, Information Security Analysts,3640,135270,127160,78360,163720
+ 15-1131, Computer Programmers,6690,102370,92550,61320,122890
+ 15-1132," Software Developers, Applications",33180,126690,121810,81370,149350
+ 15-1133," Software Developers, Systems Software",9970,127820,127390,78590,152440
+ 15-1134, Web Developers,8480,89750,80800,50780,109230
+ 15-1141, Database Administrators,3890,103350,98610,63220,123410
+ 15-1142, Network and Computer Systems Administrators,13610,103320,100610,62570,123690
+ 15-1143, Computer Network Architects,4810,123150,120840,62490,153480
+ 15-1151, Computer User Support Specialists,21940,64570,60180,40650,76530
+ 15-1152, Computer Network Support Specialists,6190,87630,81610,57100,102900
+ 15-1199," Computer Occupations, All Other",1470,91560,94680,51080,111800
+ 15-2011, Actuaries,1580,147240,126850,76920,182410
+ 15-2031, Operations Research Analysts,3880,109480,100010,61580,133430
+ 15-2041, Statisticians,600,102720,96190,70280,118950
+ 15-2090,Miscellaneous Mathematical Science Occupations,,173290,180520,94280,212800
+ 17-0000,Architecture and Engineering Occupations,37860,94730,84500,58160,113020
+ 17-1011," Architects, Except Landscape and Naval",9970,102580,85350,63110,122310
+ 17-1012, Landscape Architects,580,75380,74910,54030,86050
+ 17-1021, Cartographers and Photogrammetrists,,90860,80360,71140,100730
+ 17-1022, Surveyors,590,77950,74490,52910,90480
+ 17-2011, Aerospace Engineers,,100090,99920,71940,114170
+ 17-2031, Biomedical Engineers,,108160,88560,63770,130350
+ 17-2041,Chemical Engineers,,93570,96390,59420,110640
+ 17-2051, Civil Engineers,7480,99640,93700,66970,115980
+ 17-2061, Computer Hardware Engineers,320,128510,133120,90900,147320
+ 17-2071, Electrical Engineers,2970,110970,107520,74820,129040
+ 17-2072," Electronics Engineers, Except Computer",570,108900,107160,68860,128920
+ 17-2081, Environmental Engineers,920,99120,90630,66760,115300
+ 17-2111,"Health and Safety Engineers, Except Mining Safety Engineers and Inspectors",610,94890,92020,67450,108610
+ 17-2112, Industrial Engineers,1270,126710,96170,59150,160490
+ 17-2121, Marine Engineers and Naval Architects,,121310,106190,74630,144650
+ 17-2131, Materials Engineers,,107180,112180,69120,126200
+ 17-2141, Mechanical Engineers,2420,98470,92840,64580,115420
+ 17-2161, Nuclear Engineers,,123930,133630,84840,143470
+ 17-2199," Engineers, All Other",1280,93360,90210,59110,110480
+ 17-3011, Architectural and Civil Drafters,2760,62500,60550,45230,71140
+ 17-3012, Electrical and Electronics Drafters,750,70350,69590,36800,87130
+ 17-3013, Mechanical Drafters,850,62990,61030,36700,76130
+ 17-3019," Drafters, All Other",290,70530,68000,44810,83400
+ 17-3022, Civil Engineering Technicians,620,65820,63380,48750,74350
+ 17-3023, Electrical and Electronic Engineering Technicians,1270,75290,69260,51650,87110
+ 17-3025, Environmental Engineering Technicians,,77030,69490,43490,93800
+ 17-3026, Industrial Engineering Technicians,,65600,62140,41890,77450
+ 17-3027, Mechanical Engineering Technicians,,70210,69510,48880,80880
+ 17-3029,"Engineering Technicians, Except Drafters, All Other",570,64150,60280,47600,72420
+ 17-3031, Surveying and Mapping Technicians,,56500,48830,38070,65710
+ 19-0000,"Life, Physical, and Social Science Occupations",26340,80990,70160,44640,99160
+ 19-1012, Food Scientists and Technologists,,63050,61670,51040,69060
+ 19-1013, Soil and Plant Scientists,,64300,55090,36410,78250
+ 19-1021, Biochemists and Biophysicists,,69290,60300,49590,79150
+ 19-1022, Microbiologists,,78450,74380,51420,91960
+ 19-1023, Zoologists and Wildlife Biologists,,82380,78310,60070,93530
+ 19-1029," Biological Scientists, All Other",280,92090,94720,70230,103020
+ 19-1031, Conservation Scientists,,132530,146100,99860,148870
+ 19-1032, Foresters,,65270,61690,59800,68010
+ 19-1041, Epidemiologists,,87610,76980,59210,101810
+ 19-1042," Medical Scientists, Except Epidemiologists",4890,89460,69800,50270,109060
+ 19-2012, Physicists,,123810,81560,54930,158250
+ 19-2021, Atmospheric and Space Scientists,,101800,95020,59710,122840
+ 19-2031, Chemists,830,87090,75630,52850,104200
+ 19-2032, Materials Scientists,,90750,84370,37580,117340
+ 19-2041,"Environmental Scientists and Specialists, Including Health",1300,87250,78550,50420,105660
+ 19-2042,"Geoscientists, Except Hydrologists and Geographers",,88370,76630,56140,104480
+ 19-2099," Physical Scientists, All Other",290,108360,109320,70110,127480
+ 19-3011, Economists,540,140020,112330,72370,173850
+ 19-3022, Survey Researchers,340,66740,67660,41240,79480
+ 19-3031," Clinical, Counseling, and School Psychologists",4670,99150,94700,58900,119270
+ 19-3039," Psychologists, All Other",,103150,110160,42860,133290
+ 19-3041, Sociologists,290,73080,66600,38790,90220
+ 19-3051, Urban and Regional Planners,740,84020,74650,55300,98370
+ 19-3091, Anthropologists and Archeologists,,104420,108660,82280,115500
+ 19-3094, Political Scientists,,123820,124670,87490,141980
+ 19-3099," Social Scientists and Related Workers, All Other",1590,86010,84330,54020,102010
+ 19-4011, Agricultural and Food Science Technicians,,49160,47230,28290,59590
+ 19-4021, Biological Technicians,960,52150,48570,39700,58370
+ 19-4031, Chemical Technicians,440,55640,51290,36050,65430
+ 19-4061, Social Science Research Assistants,3050,58450,54840,36540,69410
+ 19-4091,"Environmental Science and Protection Technicians, Including Health",960,59670,56810,41100,68960
+ 19-4099,"Life, Physical, and Social Science Technicians, All Other",2860,55000,52960,33020,65980
+ 21-0000,Community and Social Service Occupations,82160,55080,49950,32800,66210
+ 21-1012,"Educational, Guidance, School, and Vocational Counselors",10050,68630,62970,39660,83120
+ 21-1013, Marriage and Family Therapists,510,49730,52110,36930,56130
+ 21-1015, Rehabilitation Counselors,2860,38420,36470,27840,43710
+ 21-1018,"Substance abuse, behavioral disorder, and mental health counselors+(OES-specific code and title)",5420,52940,51590,32200,63300
+ 21-1019," Counselors, All Other",260,54180,50080,34810,63870
+ 21-1021," Child, Family, and School Social Workers",13700,57920,53900,37410,68170
+ 21-1022, Healthcare Social Workers,5850,66900,66760,45660,77510
+ 21-1023, Mental Health and Substance Abuse Social Workers,4620,65330,60330,42010,76990
+ 21-1029,"Social Workers, All Other",2560,68000,66120,51050,76480
+ 21-1091, Health Educators,2590,60580,55220,41390,70180
+ 21-1093, Social and Human Service Assistants,15160,37800,36440,26720,43340
+ 21-1094, Community Health Workers,2350,47700,43450,33230,54930
+ 21-1099,"Community and Social Service Specialists, All Other",9930,55360,50120,41680,62200
+ 21-2011, Clergy,3330,57170,39580,27440,72030
+ 21-2021," Directors, Religious Activities and Education",1690,45990,39370,24960,58000
+ 21-2099," Religious Workers, All Other",290,42630,34390,24960,52590
+ 23-0000,Legal Occupations,68360,156880,132180,59510,205570
+ 23-1011, Lawyers,50200,188850,169790,86420,240060
+ 23-1021,"Administrative Law Judges, Adjudicators, and Hearing Officers",850,99180,96320,84670,106440
+ 23-1022," Arbitrators, Mediators, and Conciliators",,80600,85620,43170,99310
+ 23-2011, Paralegals and Legal Assistants,13570,62770,55850,41550,73370
+ 23-2091, Court Reporters,600,98590,107130,71120,112320
+ 23-2093," Title Examiners, Abstractors, and Searchers",1170,62580,60250,49180,69280
+ 23-2099," Legal Support Workers, All Other",1350,64320,58360,35050,78950
+ 25-0000,"Education, Training, and Library Occupations",260440,73500,63300,32660,93920
+ 25-1011," Business Teachers, Postsecondary",3360,123610,98850,47580,161620
+ 25-1021," Computer Science Teachers, Postsecondary",1300,116910,108780,54520,148100
+ 25-1022," Mathematical Science Teachers, Postsecondary",1950,122570,117840,57630,155040
+ 25-1031," Architecture Teachers, Postsecondary",600,151990,133400,74910,190520
+ 25-1032," Engineering Teachers, Postsecondary",960,147250,138380,79340,181200
+ 25-1042," Biological Science Teachers, Postsecondary",1940,105270,89460,47470,134170
+ 25-1051,"Atmospheric, Earth, Marine, and Space Sciences Teachers, Postsecondary",320,115820,109460,64080,141690
+ 25-1052," Chemistry Teachers, Postsecondary",860,117720,115490,63340,144910
+ 25-1053," Environmental Science Teachers, Postsecondary",,118930,124530,59620,148590
+ 25-1054," Physics Teachers, Postsecondary",510,126250,123190,69080,154840
+ 25-1061,"Anthropology and Archeology Teachers, Postsecondary",520,127060,131650,62080,159540
+ 25-1062,"Area, Ethnic, and Cultural Studies Teachers, Postsecondary",600,104650,92010,53770,130090
+ 25-1063," Economics Teachers, Postsecondary",650,141550,132670,63060,180800
+ 25-1064," Geography Teachers, Postsecondary",,101390,89560,55730,124210
+ 25-1065," Political Science Teachers, Postsecondary",780,143210,129120,61680,183980
+ 25-1066," Psychology Teachers, Postsecondary",2180,108950,94460,49630,138610
+ 25-1067," Sociology Teachers, Postsecondary",600,101650,85000,45180,129880
+ 25-1069,"Social Sciences Teachers, Postsecondary, All Other",1300,116740,103160,59190,145520
+ 25-1071," Health Specialties Teachers, Postsecondary",11280,124470,109360,63840,154790
+ 25-1072," Nursing Instructors and Teachers, Postsecondary",1330,120620,124500,69680,146080
+ 25-1081," Education Teachers, Postsecondary",2150,106290,97350,50220,134320
+ 25-1082," Library Science Teachers, Postsecondary",300,84110,82160,65170,93580
+ 25-1112," Law Teachers, Postsecondary",1620,140960,109510,40770,191060
+ 25-1113," Social Work Teachers, Postsecondary",1180,104830,97190,45190,134650
+ 25-1121," Art, Drama, and Music Teachers, Postsecondary",5420,109450,92500,54770,136790
+ 25-1122," Communications Teachers, Postsecondary",1610,105520,88390,51860,132350
+ 25-1123,"English Language and Literature Teachers, Postsecondary",3640,104580,93520,52740,130500
+ 25-1124,"Foreign Language and Literature Teachers, Postsecondary",1670,99190,83850,51070,123260
+ 25-1125," History Teachers, Postsecondary",800,107790,92380,50910,136240
+ 25-1126," Philosophy and Religion Teachers, Postsecondary",1500,86060,71720,44290,106950
+ 25-1191, Graduate Teaching Assistants,6120,42240,38640,25690,50520
+ 25-1193,"Recreation and Fitness Studies Teachers, Postsecondary",400,106400,89570,55550,131820
+ 25-1194," Vocational Education Teachers, Postsecondary",1280,67290,68320,45660,78100
+ 25-1199,"Postsecondary Teachers, All Other",2440,109030,94620,59890,133590
+ 25-2011," Preschool Teachers, Except Special Education",16980,54200,46870,27520,67550
+ 25-2012," Kindergarten Teachers, Except Special Education",1410,70150,62230,39110,85660
+ 25-2021,"Elementary School Teachers, Except Special Education",28370,77510,77630,48020,92250
+ 25-2022,"Middle School Teachers, Except Special and Career/Technical Education",13080,78140,78020,53000,90710
+ 25-2023,"Career/Technical  Education Teachers, Middle School",550,77150,72230,49870,90790
+ 25-2031,"Secondary School Teachers, Except Special and Career/Technical Education",22320,83190,81210,55360,97110
+ 25-2032,"Career/Technical Education Teachers, Secondary School",720,85130,87190,58030,98680
+ 25-2051," Special Education Teachers, Preschool",2500,82320,67610,45080,100940
+ 25-2052,"Special Education Teachers, Kindergarten and Elementary School",7030,74310,71510,49860,86540
+ 25-2053," Special Education Teachers, Middle School",4280,78730,75580,56680,89760
+ 25-2054," Special Education Teachers, Secondary School",6120,86870,80150,56950,101830
+ 25-2059," Special Education Teachers, All Other",1350,102830,94000,58200,125140
+ 25-3011,Adult Basic and Secondary Education and Literacy Teachers and Instructors,2130,78120,75080,46870,93750
+ 25-3021, Self-Enrichment Education Teachers,16750,63530,52530,32440,79080
+ 25-3097,"Teachers and Instructors, All Other, Except Substitute Teachers",9730,54390,40670,24960,69180
+ 25-3098,Substitute teachers,8050,55020,47650,38550,63250
+ 25-4011, Archivists,970,54790,49250,34930,64720
+ 25-4012, Curators,1020,83370,73540,51260,99430
+ 25-4013, Museum Technicians and Conservators,660,66520,61780,43360,78100
+ 25-4021, Librarians,4640,69820,65640,52550,78450
+ 25-4031, Library Technicians,2910,38850,39980,24960,47160
+ 25-9011,Audio-Visual and Multimedia Collections Specialists,,63200,59430,44770,72420
+ 25-9031, Instructional Coordinators,6300,71430,64510,44150,85070
+ 25-9041, Teacher Assistants,39650,31370,31090,24960,35380
+ 25-9099,"Education, Training, and Library Workers, All Other",600,51010,38220,28790,62120
+ 27-0000,"Arts, Design, Entertainment, Sports, and Media Occupations",141770,87370,72840,40800,110660
+ 27-1011, Art Directors,6960,131060,115400,78200,157490
+ 27-1012, Craft Artists,,62810,54890,33090,77670
+ 27-1013,"Fine Artists, Including Painters, Sculptors, and Illustrators",1100,72930,60110,45780,86500
+ 27-1014, Multimedia Artists and Animators,1580,85340,77220,51400,102300
+ 27-1019," Artists and Related Workers, All Other",,98900,94720,62810,116950
+ 27-1021, Commercial and Industrial Designers,1510,72690,70410,36350,90850
+ 27-1022, Fashion Designers,6090,91450,79520,48540,112910
+ 27-1023, Floral Designers,670,40230,42410,29720,45480
+ 27-1024, Graphic Designers,14580,72360,66400,44770,86160
+ 27-1025, Interior Designers,2760,72090,66680,47890,84190
+ 27-1026, Merchandise Displayers and Window Trimmers,2930,39010,32740,24970,46040
+ 27-1027, Set and Exhibit Designers,1390,80770,72590,48560,96870
+ 27-1029," Designers, All Other",250,90900,78840,50890,110900
+ 27-2012, Producers and Directors,19910,123400,103150,53570,158310
+ 27-2021, Athletes and Sports Competitors,,114040,76090,29910,156100
+ 27-2022, Coaches and Scouts,3210,63400,58870,26080,82050
+ 27-2032, Choreographers,,103640,63120,56580,127170
+ 27-2041, Music Directors and Composers,1240,86040,62060,35610,111250
+ 27-3011, Radio and Television Announcers,860,99520,61760,26630,135970
+ 27-3021, Broadcast News Analysts,940,98540,66150,30510,132550
+ 27-3022, Reporters and Correspondents,3200,83680,70140,40170,105440
+ 27-3031, Public Relations Specialists,18130,77180,66550,39430,96060
+ 27-3041, Editors,15030,87740,73830,45230,109000
+ 27-3042, Technical Writers,1440,84180,77370,50890,100820
+ 27-3043, Writers and Authors,6040,89980,78350,49420,110260
+ 27-3091, Interpreters and Translators,1660,74730,69470,49930,87120
+ 27-3099," Media and Communication Workers, All Other",380,54370,46160,30390,66360
+ 27-4011, Audio and Video Equipment Technicians,5070,57940,54460,34040,69890
+ 27-4012, Broadcast Technicians,3670,62400,60320,35510,75840
+ 27-4014, Sound Engineering Technicians,1420,84540,78320,44100,104760
+ 27-4021, Photographers,2780,60090,51790,28580,75850
+ 27-4031,"Camera Operators, Television, Video, and Motion Picture",1150,92010,84000,53390,111320
+ 27-4032, Film and Video Editors,3940,88010,75170,43860,110080
+ 27-4099,"Media and Communication Equipment Workers, All Other",,84660,70500,36070,108950
+ 29-0000,Healthcare Practitioners and Technical Occupations,216390,100800,89570,53550,124430
+ 29-1011, Chiropractors,800,87050,82310,73410,93870
+ 29-1021," Dentists, General",4660,154570,127710,109740,176980
+ 29-1022, Oral and Maxillofacial Surgeons,,133940,106240,58100,171850
+ 29-1029," Dentists, All Other Specialists",,226280,,123150,277850
+ 29-1031, Dietitians and Nutritionists,1960,69270,66080,53150,77330
+ 29-1041, Optometrists,670,123500,124680,99750,135370
+ 29-1051, Pharmacists,10510,119490,120850,89520,134470
+ 29-1061, Anesthesiologists,370,227000,,69800,305600
+ 29-1062, Family and General Practitioners,720,183490,172060,107050,221710
+ 29-1063," Internists, General",1150,191990,188590,68430,253760
+ 29-1064, Obstetricians and Gynecologists,570,220010,,98850,280590
+ 29-1065," Pediatricians, General",990,172480,160580,87530,214950
+ 29-1066, Psychiatrists,2240,209540,199260,99410,264600
+ 29-1067, Surgeons,660,196890,210100,67960,261350
+ 29-1069," Physicians and Surgeons, All Other",26680,162870,131600,66380,211110
+ 29-1071, Physician Assistants,5410,115790,115160,92780,127290
+ 29-1081, Podiatrists,690,166130,131660,94050,202160
+ 29-1122, Occupational Therapists,2990,102150,100150,69270,118600
+ 29-1123, Physical Therapists,5140,88790,85950,64970,100700
+ 29-1124, Radiation Therapists,530,103190,103770,71040,119260
+ 29-1125, Recreational Therapists,560,59480,57560,43770,67330
+ 29-1126, Respiratory Therapists,2080,83070,82370,73000,88100
+ 29-1127, Speech-Language Pathologists,4650,96640,83690,64900,112510
+ 29-1128, Exercise Physiologists,,78060,82030,54860,89660
+ 29-1129," Therapists, All Other",300,66930,61300,50160,75320
+ 29-1131, Veterinarians,610,116680,109740,47740,151140
+ 29-1141, Registered Nurses,71290,96400,96350,75770,106720
+ 29-1151, Nurse Anesthetists,660,193550,172000,128810,225920
+ 29-1161, Nurse Midwives,270,105850,107550,85530,116010
+ 29-1171, Nurse Practitioners,5940,130530,124450,99920,145830
+ 29-1181, Audiologists,,94080,92600,72360,104950
+ 29-1199,"Health Diagnosing and Treating Practitioners, All Other",1360,81630,65270,41380,101760
+ 29-2010,Clinical Laboratory Technologists and Technicians,7500,66510,67180,46220,76660
+ 29-2021, Dental Hygienists,3120,89170,91180,73160,97170
+ 29-2031, Cardiovascular Technologists and Technicians,1220,61310,58800,41110,71410
+ 29-2032, Diagnostic Medical Sonographers,1690,76580,76070,62280,83740
+ 29-2033, Nuclear Medicine Technologists,450,90190,88560,69880,100340
+ 29-2034, Radiologic Technologists,4660,76080,76020,57190,85520
+ 29-2035, Magnetic Resonance Imaging Technologists,1090,85840,87290,71750,92890
+ 29-2041, Emergency Medical Technicians and Paramedics,4820,46190,46110,30990,53790
+ 29-2051, Dietetic Technicians,290,47550,47420,42330,50160
+ 29-2052, Pharmacy Technicians,7850,36530,35400,24960,42330
+ 29-2053, Psychiatric Technicians,760,47830,46970,42380,50550
+ 29-2054, Respiratory Therapy Technicians,,67530,70830,47930,77340
+ 29-2055, Surgical Technologists,2630,59140,57580,42120,67660
+ 29-2056, Veterinary Technologists and Technicians,1110,45530,45390,29440,53570
+ 29-2057, Ophthalmic Medical Technicians,740,42170,41090,30610,47950
+ 29-2061, Licensed Practical and Licensed Vocational Nurses,14320,54270,55280,43970,59420
+ 29-2071,Medical Records and Health Information Technicians,3660,49100,45970,31840,57730
+ 29-2081," Opticians, Dispensing",750,52350,55660,28880,64080
+ 29-2091, Orthotists and Prosthetists,,70930,67820,44120,84330
+ 29-2092, Hearing Aid Specialists,,48090,47460,29580,57350
+ 29-2099," Health Technologists and Technicians, All Other",2000,53650,47100,35410,62760
+ 29-9011, Occupational Health and Safety Specialists,950,80090,77500,43160,98550
+ 29-9012, Occupational Health and Safety Technicians,530,62380,61030,53380,66880
+ 29-9091, Athletic Trainers,410,49610,43680,32740,58040
+ 29-9092, Genetic Counselors,,81590,79640,70000,87380
+ 29-9099,"Healthcare Practitioners and Technical Workers, All Other",450,80600,75730,48120,96840
+ 31-0000,Healthcare Support Occupations,220340,29960,25600,24960,33380
+ 31-1011, Home Health Aides,147580,24960,24960,24960,25620
+ 31-1013, Psychiatric Aides,1650,45570,46440,38120,49300
+ 31-1014, Nursing Assistants,36800,40130,40050,33070,43670
+ 31-1015, Orderlies,,38060,37930,33800,40190
+ 31-2011, Occupational Therapy Assistants,850,68880,66590,55290,75680
+ 31-2012, Occupational Therapy Aides,,32590,29810,24960,36780
+ 31-2021, Physical Therapist Assistants,1160,58050,58940,40710,66730
+ 31-2022, Physical Therapist Aides,880,27210,24960,24960,29560
+ 31-9011, Massage Therapists,1310,69400,70310,32550,87830
+ 31-9091, Dental Assistants,9020,35140,32440,24960,40790
+ 31-9092, Medical Assistants,12640,37780,37010,28390,42470
+ 31-9093, Medical Equipment Preparers,1260,47560,47260,39370,51660
+ 31-9094, Medical Transcriptionists,300,50880,50050,42550,55040
+ 31-9095, Pharmacy Aides,760,30920,27410,24960,35420
+ 31-9096,Veterinary Assistants and Laboratory Animal Caretakers,450,40060,36950,28150,46010
+ 31-9097, Phlebotomists,1950,45340,45950,33670,51170
+ 31-9099," Healthcare Support Workers, All Other",2120,41920,41010,32010,46870
+ 33-0000,Protective Service Occupations,163370,51540,43840,24970,64820
+ 33-1011, First-Line Supervisors of Correctional Officers,1120,94170,92940,77770,102360
+ 33-1012, First-Line Supervisors of Police and Detectives,6790,110700,107250,90240,120940
+ 33-1099,"First-Line Supervisors of Protective Service Workers, All Other",4830,71220,61780,44010,84830
+ 33-2011, Firefighters,5690,73050,76830,62950,78100
+ 33-2021, Fire Inspectors and Investigators,,68880,59790,46820,79910
+ 33-3012, Correctional Officers and Jailers,8830,69200,73650,52170,77720
+ 33-3021, Detectives and Criminal Investigators,4030,81750,67440,47760,98750
+ 33-3041, Parking Enforcement Workers,,42800,41290,36250,46070
+ 33-3051, Police and Sheriff's Patrol Officers,26310,70390,73930,46160,82510
+ 33-3052, Transit and Railroad Police,1450,81190,80290,66860,88360
+ 33-9021, Private Detectives and Investigators,,65460,63240,48270,74050
+ 33-9032, Security Guards,79750,35290,30920,24960,41820
+ 33-9091, Crossing Guards,5120,35550,36510,30210,38210
+ 33-9092,"Lifeguards, Ski Patrol, and Other Recreational Protective Service",3690,30930,30660,24960,34930
+ 33-9099," Protective Service Workers, All Other",7820,29950,25070,24960,34270
+ 35-0000,Food Preparation and Serving Related Occupations,330710,31550,25680,24960,36610
+ 35-1011, Chefs and Head Cooks,9210,46520,39380,24960,59360
+ 35-1012,First-Line Supervisors of Food Preparation and Serving Workers,18720,44220,41330,25910,53380
+ 35-2011," Cooks, Fast Food",5880,24960,24960,24960,25560
+ 35-2012," Cooks, Institution and Cafeteria",5150,36700,35680,27190,41460
+ 35-2014," Cooks, Restaurant",34170,30500,27550,24960,34800
+ 35-2015," Cooks, Short Order",6660,24960,24960,24960,24960
+ 35-2019," Cooks, All Other",460,32660,30950,27590,35190
+ 35-2021, Food Preparation Workers,29580,28050,25820,24960,31300
+ 35-3011, Bartenders,18610,37230,33230,24960,44850
+ 35-3021,"Combined Food Preparation and Serving Workers, Including Fast Food",61160,24960,24960,24960,26160
+ 35-3022,"Counter Attendants, Cafeteria, Food Concession, and Coffee Shop",13490,26210,24960,24960,28500
+ 35-3031, Waiters and Waitresses,77070,35620,27530,24960,42890
+ 35-3041," Food Servers, Nonrestaurant",6500,37260,36890,29930,40930
+ 35-9011,Dining Room and Cafeteria Attendants and Bartender Helpers,18430,29390,24960,24960,33700
+ 35-9021, Dishwashers,15060,26870,24960,24960,29780
+ 35-9031,"Hosts and Hostesses, Restaurant, Lounge, and Coffee Shop",8890,30170,28920,24960,33790
+ 35-9099,"Food Preparation and Serving Related Workers, All Other",,30280,28120,24960,34000
+ 37-0000,Building and Grounds Cleaning and Maintenance Occupations,133010,39350,36640,24960,47060
+ 37-1011,First-Line Supervisors of Housekeeping and Janitorial Workers,5650,58450,58490,39780,67780
+ 37-1012,"First-Line Supervisors of Landscaping, Lawn Service, and Groundskeeping Workers",970,62110,59490,45100,70620
+ 37-2011,"Janitors and Cleaners, Except Maids and Housekeeping Cleaners",93020,37280,34570,24960,44160
+ 37-2012, Maids and Housekeeping Cleaners,24660,43070,39010,24960,52360
+ 37-2019," Building Cleaning Workers, All Other",,33680,29470,24960,38780
+ 37-2021, Pest Control Workers,790,36620,37020,30100,39880
+ 37-3011, Landscaping and Groundskeeping Workers,5500,37860,36270,24960,44440
+ 37-3012,"Pesticide Handlers, Sprayers, and Applicators, Vegetation",,37280,33650,27760,42040
+ 37-3013, Tree Trimmers and Pruners,,65820,65330,53830,71810
+ 39-0000,Personal Care and Service Occupations,188270,33070,25800,24960,38340
+ 39-1021,First-Line Supervisors of Personal Service Workers,8790,46480,45380,27280,56080
+ 39-2011, Animal Trainers,,38350,35790,30500,42280
+ 39-2021, Nonfarm Animal Caretakers,3620,31950,31240,24960,36860
+ 39-3031," Ushers, Lobby Attendants, and Ticket Takers",7760,26880,24960,24960,29430
+ 39-3091, Amusement and Recreation Attendants,4030,27480,24960,24960,30150
+ 39-3092, Costume Attendants,970,78850,81410,44000,96270
+ 39-3093,"Locker Room, Coatroom, and Dressing Room Attendants",1010,28560,24960,24960,32270
+ 39-3099,"Entertainment Attendants and Related Workers, All Other",,29540,28530,24960,32280
+ 39-4021, Funeral Attendants,270,29770,28360,24960,33580
+ 39-4031," Morticians, Undertakers, and Funeral Directors",480,53840,56440,33250,64140
+ 39-5011, Barbers,,34120,34260,24960,40750
+ 39-5012," Hairdressers, Hairstylists, and Cosmetologists",11500,38050,25980,24960,46590
+ 39-5091," Makeup Artists, Theatrical and Performance",590,78580,70820,40580,97590
+ 39-5092, Manicurists and Pedicurists,10200,24960,24960,24960,24960
+ 39-5093, Shampooers,900,24960,24960,24960,25740
+ 39-5094, Skincare Specialists,2040,39040,33720,24960,47110
+ 39-6011, Baggage Porters and Bellhops,3170,32820,30020,24960,37730
+ 39-6012, Concierges,4070,48150,47370,35600,54420
+ 39-7010,Tour and Travel Guides,1940,38390,31160,24960,46250
+ 39-9011, Childcare Workers,16000,30990,31010,24960,34810
+ 39-9021, Personal Care Aides,81280,25640,24960,24960,26930
+ 39-9031, Fitness Trainers and Aerobics Instructors,10510,73300,69990,35900,92000
+ 39-9032, Recreation Workers,13930,35640,32720,24960,41780
+ 39-9041, Residential Advisors,3040,37430,33990,25420,43430
+ 39-9099," Personal Care and Service Workers, All Other",550,39650,38730,24960,47510
+ 41-0000,Sales and Related Occupations,420770,66170,35330,24960,88310
+ 41-1011, First-Line Supervisors of Retail Sales Workers,24350,52910,46590,31600,63570
+ 41-1012,First-Line Supervisors of Non-Retail Sales Workers,12990,123210,103090,57800,155910
+ 41-2011, Cashiers,74060,25970,24960,24960,28540
+ 41-2021, Counter and Rental Clerks,9760,29990,24960,24960,34280
+ 41-2022, Parts Salespersons,1380,39610,36190,25230,46800
+ 41-2031,Retail Salespersons,130460,28430,24960,24960,32120
+ 41-3011, Advertising Sales Agents,15700,91430,75640,45200,114540
+ 41-3021, Insurance Sales Agents,6820,104990,74200,36030,139470
+ 41-3031,"Securities, Commodities, and Financial Services Sales Agents",49480,184670,168180,75310,239350
+ 41-3041, Travel Agents,4310,42590,37490,25240,51260
+ 41-3099," Sales Representatives, Services, All Other",38490,86190,71440,39830,109370
+ 41-4011,"Sales Representatives, Wholesale and Manufacturing, Technical and Scientific Products",5400,112460,96570,53630,141870
+ 41-4012,"Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",36850,75820,60870,31350,98050
+ 41-9011, Demonstrators and Product Promoters,1920,34200,29440,24960,40070
+ 41-9021, Real Estate Brokers,1160,112090,95930,46880,144690
+ 41-9022, Real Estate Sales Agents,2870,118130,102990,58960,147720
+ 41-9031, Sales Engineers,850,129210,126670,92030,147800
+ 41-9041, Telemarketers,2740,30260,24960,24960,34960
+ 41-9099," Sales and Related Workers, All Other",690,41810,34920,27130,49150
+ 43-0000,Office and Administrative Support Occupations,667930,47540,42560,26720,57950
+ 43-1011,First-Line Supervisors of Office and Administrative Support Workers,53950,77420,71420,47800,92230
+ 43-2011,"Switchboard Operators, Including Answering Service",2300,41740,39570,26410,49410
+ 43-2021, Telephone Operators,400,51550,52480,41410,56620
+ 43-2099," Communications Equipment Operators, All Other",,49310,46010,40080,53920
+ 43-3011, Bill and Account Collectors,4500,49570,47340,30960,58870
+ 43-3021, Billing and Posting Clerks,13970,46710,45270,31440,54350
+ 43-3031," Bookkeeping, Accounting, and Auditing Clerks",43610,48310,47200,29720,57600
+ 43-3051, Payroll and Timekeeping Clerks,3710,50140,50270,31910,59260
+ 43-3061, Procurement Clerks,1150,45810,47260,31490,52970
+ 43-3071, Tellers,9940,30730,29900,25380,33410
+ 43-3099," Financial Clerks, All Other",880,59850,54080,40160,69700
+ 43-4011, Brokerage Clerks,4510,65810,62830,41320,78060
+ 43-4021, Correspondence Clerks,,47710,47340,35920,53610
+ 43-4031," Court, Municipal, and License Clerks",2420,71910,73960,44890,85420
+ 43-4041," Credit Authorizers, Checkers, and Clerks",670,52820,50340,37490,60480
+ 43-4051, Customer Service Representatives,64540,44040,40060,26650,52740
+ 43-4061," Eligibility Interviewers, Government Programs",3850,48260,47020,37950,53420
+ 43-4071, File Clerks,3890,36290,33040,24960,42490
+ 43-4081," Hotel, Motel, and Resort Desk Clerks",4700,41660,38220,24960,50680
+ 43-4111," Interviewers, Except Eligibility and Loan",6520,41470,43510,27860,48280
+ 43-4121," Library Assistants, Clerical",1770,31480,26660,24960,36720
+ 43-4131, Loan Interviewers and Clerks,3010,46270,46020,30320,54250
+ 43-4141, New Accounts Clerks,270,59740,55090,35080,72070
+ 43-4151, Order Clerks,2380,38680,36060,24960,45710
+ 43-4161,"Human Resources Assistants, Except Payroll and Timekeeping",4920,47600,46800,32330,55240
+ 43-4171, Receptionists and Information Clerks,39690,34710,32950,24960,39620
+ 43-4181,Reservation and Transportation Ticket Agents and Travel Clerks,8020,38970,34940,24960,46830
+ 43-4199," Information and Record Clerks, All Other",1590,48880,47290,35150,55750
+ 43-5011, Cargo and Freight Agents,4350,42930,40100,24960,52290
+ 43-5021, Couriers and Messengers,4670,32840,26540,24960,38700
+ 43-5031," Police, Fire, and Ambulance Dispatchers",300,45270,45800,33580,51110
+ 43-5032," Dispatchers, Except Police, Fire, and Ambulance",6770,54150,44070,25450,68510
+ 43-5051, Postal Service Clerks,2130,52270,59940,38480,59160
+ 43-5052, Postal Service Mail Carriers,9040,51270,61250,36020,58900
+ 43-5053,"Postal Service Mail Sorters, Processors, and Processing Machine Operators",4690,52140,58610,37310,59560
+ 43-5061," Production, Planning, and Expediting Clerks",15980,53910,53190,35950,62890
+ 43-5071," Shipping, Receiving, and Traffic Clerks",10800,38830,36110,24960,45890
+ 43-5081, Stock Clerks and Order Fillers,39060,28610,24960,24960,32140
+ 43-5111,"Weighers, Measurers, Checkers, and Samplers, Recordkeeping",980,32080,28890,24960,36610
+ 43-6011,Executive Secretaries and Executive Administrative Assistants,54910,75810,74720,53660,86890
+ 43-6012, Legal Secretaries,8390,71210,72930,42980,85330
+ 43-6013, Medical Secretaries,4140,45340,45490,32940,51550
+ 43-6014,"Secretaries and Administrative Assistants, Except Legal, Medical, and Executive",84560,43480,43760,29150,50650
+ 43-9011, Computer Operators,1810,46920,49000,27380,56690
+ 43-9021, Data Entry Keyers,5060,37850,35110,26250,43650
+ 43-9022, Word Processors and Typists,2010,49000,44540,33860,56560
+ 43-9031, Desktop Publishers,570,62810,63570,38720,74850
+ 43-9041, Insurance Claims and Policy Processing Clerks,3840,57910,55450,40420,66660
+ 43-9051,"Mail Clerks and Mail Machine Operators, Except Postal Service",3880,35990,35040,24960,42020
+ 43-9061," Office Clerks, General",95520,35150,33540,24960,41650
+ 43-9071," Office Machine Operators, Except Computer",1530,38460,35980,25360,45010
+ 43-9081, Proofreaders and Copy Markers,1030,48140,48390,32380,56020
+ 43-9111, Statistical Assistants,360,54700,52540,45940,59080
+ 43-9199,"Office and Administrative Support Workers, All Other",13580,39120,38500,36840,40260
+ 45-0000,"Farming, Fishing, and Forestry Occupations",,38120,31440,27630,43360
+ 45-1011,"First-Line Supervisors of Farming, Fishing, and Forestry Workers",,64430,62050,52580,70360
+ 45-2011, Agricultural Inspectors,,64040,67770,42770,74670
+ 45-2092,"Farmworkers and Laborers, Crop, Nursery, and Greenhouse",,35000,30710,27860,38570
+ 45-4011, Forest and Conservation Workers,,33210,33550,24960,38610
+ 47-0000,Construction and Extraction Occupations,125060,74150,70040,37860,92290
+ 47-1011,Supervisors of Construction and Extraction Workers,8630,97190,94990,59980,115800
+ 47-2011, Boilermakers,,65570,57900,44140,76280
+ 47-2021, Brickmasons and Blockmasons,3030,82200,85240,51060,97770
+ 47-2022, Stonemasons,,103080,114110,63680,122790
+ 47-2031, Carpenters,15150,72170,64820,38670,88920
+ 47-2044, Tile and Marble Setters,,90490,95790,65530,102960
+ 47-2051, Cement Masons and Concrete Finishers,3580,86800,91100,65180,97610
+ 47-2053, Terrazzo Workers and Finishers,,68130,50940,24960,90130
+ 47-2061, Construction Laborers,21120,55990,48300,31200,68390
+ 47-2071,"Paving, Surfacing, and Tamping Equipment Operators",580,80590,91270,49270,96250
+ 47-2072, Pile-Driver Operators,,112800,123290,87320,125550
+ 47-2073,Operating Engineers and Other Construction Equipment Operators,2350,117830,126110,76730,138380
+ 47-2081, Drywall and Ceiling Tile Installers,1600,56440,44450,31570,68870
+ 47-2082, Tapers,360,65050,63230,40790,77190
+ 47-2111, Electricians,20220,88750,96690,48420,108910
+ 47-2121, Glaziers,720,59940,55170,29500,75160
+ 47-2131," Insulation Workers, Floor, Ceiling, and Wall",,43070,43540,26840,51180
+ 47-2141," Painters, Construction and Maintenance",6380,53810,48840,25170,68130
+ 47-2142, Paperhangers,,60140,57030,36620,71890
+ 47-2151, Pipelayers,,57100,56900,45170,63070
+ 47-2152," Plumbers, Pipefitters, and Steamfitters",11410,78470,66600,44230,95590
+ 47-2161, Plasterers and Stucco Masons,560,79360,91670,45260,96400
+ 47-2171, Reinforcing Iron and Rebar Workers,370,103110,113250,62250,123540
+ 47-2181, Roofers,,65530,65780,30540,83030
+ 47-2211, Sheet Metal Workers,3900,77050,70550,40070,95540
+ 47-2221, Structural Iron and Steel Workers,2870,93090,93380,63860,107710
+ 47-3011,"Helpers--Brickmasons, Blockmasons, Stonemasons, and Tile and Marble Setters",700,47620,41970,29470,56700
+ 47-3012,Helpers--Carpenters,,43770,45560,32420,49440
+ 47-3013,Helpers--Electricians,2780,39680,37620,27790,45620
+ 47-3014,"Helpers--Painters, Paperhangers, Plasterers, and Stucco Masons",,36700,36640,36040,37030
+ 47-3015,"Helpers--Pipelayers, Plumbers, Pipefitters, and Steamfitters",1660,44540,40710,31620,51010
+ 47-3019,"Helpers, Construction Trades, All Other",,31680,32480,24960,36430
+ 47-4011, Construction and Building Inspectors,2670,75150,71830,49750,87840
+ 47-4021, Elevator Installers and Repairers,3690,84230,86170,52180,100260
+ 47-4031, Fence Erectors,,72260,64400,55210,80790
+ 47-4041, Hazardous Materials Removal Workers,2560,71170,73950,48330,82600
+ 47-4071, Septic Tank Servicers and Sewer Pipe Cleaners,560,42600,42360,30710,48540
+ 47-4090,Miscellaneous Construction and Related Workers,,53710,49710,38500,61320
+ 47-5021," Earth Drillers, Except Oil and Gas",,105030,100070,56210,129430
+ 47-5031,"Explosives Workers, Ordnance Handling Experts, and Blasters",,79340,76220,70210,83900
+ 49-0000,"Installation, Maintenance, and Repair Occupations",114990,56990,55320,30320,70330
+ 49-1011,"First-Line Supervisors of Mechanics, Installers, and Repairers",8610,86430,84940,56560,101360
+ 49-2011,"Computer, Automated Teller, and Office Machine Repairers",2260,46450,46260,29990,54680
+ 49-2022,"Telecommunications Equipment Installers and Repairers, Except Line Installers",5750,70510,74660,41720,84910
+ 49-2092," Electric Motor, Power Tool, and Related Repairers",,65640,66950,54940,70990
+ 49-2093,"Electrical and Electronics Installers and Repairers, Transportation Equipment",400,71830,72900,65440,75020
+ 49-2094,"Electrical and Electronics Repairers, Commercial and Industrial Equipment",390,64780,64650,45650,74350
+ 49-2095,"Electrical and Electronics Repairers, Powerhouse, Substation, and Relay",1620,79220,77420,70790,83430
+ 49-2096,"Electronic Equipment Installers and Repairers, Motor Vehicles",,40690,31440,24960,48830
+ 49-2097,Electronic Home Entertainment Equipment Installers and Repairers,480,38000,37440,24960,44950
+ 49-2098, Security and Fire Alarm Systems Installers,1850,49400,48680,28050,60070
+ 49-3011, Aircraft Mechanics and Service Technicians,1950,69290,68580,49320,79270
+ 49-3021, Automotive Body and Related Repairers,1500,44060,42460,30700,50730
+ 49-3023, Automotive Service Technicians and Mechanics,7050,41170,33670,24960,50820
+ 49-3031,Bus and Truck Mechanics and Diesel Engine Specialists,4740,62340,67290,41960,72520
+ 49-3042," Mobile Heavy Equipment Mechanics, Except Engines",320,61700,58650,31230,76940
+ 49-3052, Motorcycle Mechanics,,35130,34760,28080,38660
+ 49-3053,Outdoor Power Equipment and Other Small Engine Mechanics,,37400,35740,26020,43100
+ 49-3091, Bicycle Repairers,,35640,31720,27790,39560
+ 49-3093, Tire Repairers and Changers,,31610,24960,24960,37160
+ 49-9011, Mechanical Door Repairers,,43640,42030,33020,48950
+ 49-9021,"Heating, Air Conditioning, and Refrigeration Mechanics and Installers",6600,64380,62770,41730,75700
+ 49-9031, Home Appliance Repairers,950,40650,36520,24960,50470
+ 49-9041, Industrial Machinery Mechanics,1470,64950,60340,40470,77180
+ 49-9043," Maintenance Workers, Machinery",630,62900,59780,28180,80260
+ 49-9044, Millwrights,,88050,89520,57860,103150
+ 49-9052, Telecommunications Line Installers and Repairers,4490,81310,90800,50260,96840
+ 49-9061, Camera and Photographic Equipment Repairers,,59240,52210,41800,67960
+ 49-9062, Medical Equipment Repairers,700,62560,60290,48680,69490
+ 49-9063, Musical Instrument Repairers and Tuners,,67300,53080,42700,79600
+ 49-9064, Watch Repairers,,36490,29380,24960,43910
+ 49-9071," Maintenance and Repair Workers, General",51980,48270,46310,28170,58320
+ 49-9091,"Coin, Vending, and Amusement Machine Servicers and Repairers",800,60960,68300,37580,72650
+ 49-9092, Commercial Divers,,119120,126710,93310,132030
+ 49-9094, Locksmiths and Safe Repairers,480,51560,50120,30460,62110
+ 49-9096, Riggers,,75540,61130,46500,90060
+ 49-9098,"Helpers--Installation, Maintenance, and Repair Workers",2140,42410,42580,26610,50310
+ 49-9099,"Installation, Maintenance, and Repair Workers, All Other",910,41750,34760,24960,50970
+ 51-0000,Production Occupations,80750,40910,31590,24960,50510
+ 51-1011,First-Line Supervisors of Production and Operating Workers,5720,72710,67220,36670,90720
+ 51-2028,,820,33250,30030,24960,38610
+ 51-2041, Structural Metal Fabricators and Fitters,870,50610,44610,27290,62270
+ 51-2098,"Assemblers and fabricators, all other, including team assemblers+(OES-specific code and title)",7070,32410,28760,24960,37550
+ 51-3011, Bakers,5150,31110,27820,24960,35650
+ 51-3021, Butchers and Meat Cutters,2440,36250,32620,24960,43270
+ 51-3022," Meat, Poultry, and Fish Cutters and Trimmers",1800,32250,24960,24960,38040
+ 51-3023, Slaughterers and Meat Packers,,24960,24960,24960,26140
+ 51-3091,"Food and Tobacco Roasting, Baking, and Drying Machine Operators and Tenders",,33520,29870,24960,37920
+ 51-3092, Food Batchmakers,2070,24960,24960,24960,25990
+ 51-3093, Food Cooking Machine Operators and Tenders,,24960,24960,24960,26220
+ 51-3099," Food Processing Workers, All Other",,34920,33140,27180,38790
+ 51-4011,"Computer-Controlled Machine Tool Operators, Metal and Plastic",,33440,32750,24960,39140
+ 51-4012,"Computer Numerically Controlled Machine Tool Programmers, Metal and Plastic",,49960,47600,34240,57810
+ 51-4021,"Extruding and Drawing Machine Setters, Operators, and Tenders, Metal and Plastic",,39550,38890,26040,46300
+ 51-4023,"Rolling Machine Setters, Operators, and Tenders, Metal and Plastic",,32300,34680,24960,36420
+ 51-4031,"Cutting, Punching, and Press Machine Setters, Operators, and Tenders, Metal and Plastic",500,33300,29760,24960,38440
+ 51-4033,"Grinding, Lapping, Polishing, and Buffing Machine Tool Setters, Operators, and Tenders, Metal and Plastic",,36590,35680,27660,41060
+ 51-4034,"Lathe and Turning Machine Tool Setters, Operators, and Tenders, Metal and Plastic",,42140,39790,35030,45700
+ 51-4035,"Milling and Planing Machine Setters, Operators, and Tenders, Metal and Plastic",,45450,45420,32550,51890
+ 51-4041, Machinists,980,49100,45800,32880,57220
+ 51-4061," Model Makers, Metal and Plastic",,94410,98780,83140,100050
+ 51-4072,"Molding, Coremaking, and Casting Machine Setters, Operators, and Tenders, Metal and Plastic",,26740,24960,24960,29150
+ 51-4081,"Multiple Machine Tool Setters, Operators, and Tenders, Metal and Plastic",,38900,40860,24960,46930
+ 51-4111, Tool and Die Makers,,49680,45080,30630,59210
+ 51-4121," Welders, Cutters, Solderers, and Brazers",1830,55230,50680,33850,65930
+ 51-4122,"Welding, Soldering, and Brazing Machine Setters, Operators, and Tenders",,37500,38310,24960,44330
+ 51-4191,"Heat Treating Equipment Setters, Operators, and Tenders, Metal and Plastic",,35730,35590,29030,39080
+ 51-5111, Prepress Technician and Workers,560,55000,50830,30810,67100
+ 51-5112, Printing Press Operators,2740,48150,46620,28010,58210
+ 51-5113, Print Binding and Finishing Workers,310,43980,44710,26570,52690
+ 51-6011, Laundry and Dry-Cleaning Workers,7140,26970,24960,24960,30130
+ 51-6021," Pressers, Textile, Garment, and Related Materials",490,24960,24960,24960,26520
+ 51-6031, Sewing Machine Operators,8170,28420,24960,24960,32290
+ 51-6041, Shoe and Leather Workers and Repairers,430,24980,24960,24960,27080
+ 51-6051," Sewers, Hand",280,26100,24960,24960,28790
+ 51-6052," Tailors, Dressmakers, and Custom Sewers",860,33400,26870,24960,39660
+ 51-6061,Textile Bleaching and Dyeing Machine Operators and Tenders,,24960,24960,24960,24960
+ 51-6062,"Textile Cutting Machine Setters, Operators, and Tenders",250,42230,39490,29050,48820
+ 51-6063,"Textile Knitting and Weaving Machine Setters, Operators, and Tenders",270,28810,28700,24960,31350
+ 51-6064,"Textile Winding, Twisting, and Drawing Out Machine Setters, Operators, and Tenders",,35010,34850,27240,38890
+ 51-6092, Fabric and Apparel Patternmakers,780,67250,59460,42590,79570
+ 51-6093, Upholsterers,600,43650,39710,24960,53060
+ 51-6099,"Textile, Apparel, and Furnishings Workers, All Other",,52700,49480,35800,61160
+ 51-7011, Cabinetmakers and Bench Carpenters,1160,44450,41720,28210,52570
+ 51-7021, Furniture Finishers,,45820,40940,34490,51480
+ 51-7042,"Woodworking Machine Setters, Operators, and Tenders, Except Sawing",,40590,36960,33430,44170
+ 51-8012, Power Distributors and Dispatchers,,106780,106580,90550,114890
+ 51-8013, Power Plant Operators,730,85280,83840,55540,100140
+ 51-8021, Stationary Engineers and Boiler Operators,1960,95080,96500,66560,109330
+ 51-8031,Water and Wastewater Treatment Plant and System Operators,580,75480,77820,61620,82410
+ 51-9011, Chemical Equipment Operators and Tenders,,45530,43910,33970,51300
+ 51-9012,"Separating, Filtering, Clarifying, Precipitating, and Still Machine Setters, Operators, and Tenders",300,35540,28090,24960,41650
+ 51-9021,"Crushing, Grinding, and Polishing Machine Setters, Operators, and Tenders",390,35070,28030,24960,41120
+ 51-9022," Grinding and Polishing Workers, Hand",,51220,39540,29850,61910
+ 51-9023,"Mixing and Blending Machine Setters, Operators, and Tenders",950,42470,32970,25240,51080
+ 51-9031," Cutters and Trimmers, Hand",500,38040,33470,24960,46510
+ 51-9032,"Cutting and Slicing Machine Setters, Operators, and Tenders",340,31760,31310,24960,36630
+ 51-9041,"Extruding, Forming, Pressing, and Compacting Machine Setters, Operators, and Tenders",,30240,27420,24960,34980
+ 51-9061,"Inspectors, Testers, Sorters, Samplers, and Weighers",3660,42640,31880,24960,52590
+ 51-9071, Jewelers and Precious Stone and Metal Workers,3350,51970,45390,25700,65110
+ 51-9081, Dental Laboratory Technicians,530,39750,37110,31250,44000
+ 51-9082, Medical Appliance Technicians,,37510,32400,24960,45850
+ 51-9083, Ophthalmic Laboratory Technicians,710,43940,41590,30210,50800
+ 51-9111,Packaging and Filling Machine Operators and Tenders,2550,29460,24960,24960,33320
+ 51-9121,"Coating, Painting, and Spraying Machine Setters, Operators, and Tenders",,36570,36200,26020,41840
+ 51-9122," Painters, Transportation Equipment",270,48070,48260,37300,53460
+ 51-9123," Painting, Coating, and Decorating Workers",,39690,34790,26060,46500
+ 51-9151,Photographic Process Workers and Processing Machine Operators,970,46410,40890,25660,56790
+ 51-9191, Adhesive Bonding Machine Operators and Tenders,,33340,34670,24960,39030
+ 51-9192,"Cleaning, Washing, and Metal Pickling Equipment Operators and Tenders",,28490,29050,24960,32360
+ 51-9195,"Molders, Shapers, and Casters, Except Metal and Plastic",,36260,36290,26940,40930
+ 51-9196,"Paper Goods Machine Setters, Operators, and Tenders",730,30210,27620,24960,34370
+ 51-9198, Helpers--Production Workers,3090,30160,27670,24960,34260
+ 51-9199," Production Workers, All Other",,36820,35390,24960,43970
+ 53-0000,Transportation and Material Moving Occupations,203180,47210,39410,24960,59030
+ 53-1011, Aircraft Cargo Handling Supervisors,,50860,45340,36350,58110
+ 53-1048,,8060,69140,68180,40540,83440
+ 53-2011," Airline Pilots, Copilots, and Flight Engineers",5710,117940,109720,68350,142730
+ 53-2012, Commercial Pilots,310,103930,95380,61390,125200
+ 53-2022, Airfield Operations Specialists,260,61900,60010,41400,72150
+ 53-2031, Flight Attendants,9310,45610,41450,26350,55240
+ 53-3011,"Ambulance Drivers and Attendants, Except Emergency Medical Technicians",810,38500,41610,27000,44250
+ 53-3021," Bus Drivers, Transit and Intercity",16730,64620,70030,45960,73940
+ 53-3022," Bus Drivers, School or Special Client",12150,42510,40120,30580,48480
+ 53-3031, Driver/Sales Workers,8800,25670,24960,24960,28010
+ 53-3032, Heavy and Tractor-Trailer Truck Drivers,13710,54770,50630,31250,66530
+ 53-3033, Light Truck or Delivery Services Drivers,18960,39720,33540,24960,48310
+ 53-3041, Taxi Drivers and Chauffeurs,7140,40870,34510,25250,48690
+ 53-3099," Motor Vehicle Operators, All Other",1600,36260,35120,24960,42960
+ 53-5011, Sailors and Marine Oilers,640,54070,55500,32590,64810
+ 53-5021,"Captains, Mates, and Pilots of Water Vessels",1000,98460,94180,70720,112330
+ 53-5031, Ship Engineers,340,95090,101260,58120,113580
+ 53-6021, Parking Lot Attendants,8340,24960,24960,24960,26040
+ 53-6031, Automotive and Watercraft Service Attendants,900,25080,24960,24960,26750
+ 53-6041, Traffic Technicians,1130,58150,64320,31250,71600
+ 53-6051, Transportation Inspectors,4010,72100,74040,64790,75750
+ 53-6061,"Transportation Attendants, Except Flight Attendants",1770,30450,25670,24960,34600
+ 53-6099," Transportation Workers, All Other",890,35130,30460,24960,41030
+ 53-7011, Conveyor Operators and Tenders,,38300,38270,31340,41780
+ 53-7021, Crane and Tower Operators,330,143910,131980,94100,168810
+ 53-7032,Excavating and Loading Machine and Dragline Operators,550,75160,76650,44900,90290
+ 53-7051, Industrial Truck and Tractor Operators,3410,47970,43490,29630,57140
+ 53-7061, Cleaners of Vehicles and Equipment,7420,42340,43480,24960,52290
+ 53-7062,"Laborers and Freight, Stock, and Material Movers, Hand",44580,35120,28750,24960,41620
+ 53-7063, Machine Feeders and Offbearers,,30560,29480,24960,34430
+ 53-7064," Packers and Packagers, Hand",9610,26780,24960,24960,29570
+ 53-7081, Refuse and Recyclable Material Collectors,5270,64010,72730,39910,76060
+ 53-7199," Material Moving Workers, All Other",640,46570,47690,38180,50770

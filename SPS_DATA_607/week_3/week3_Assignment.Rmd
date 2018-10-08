@@ -35,11 +35,17 @@ Full_name
 ```{r}
 #Split Full name
 temp <- strsplit(Full_name, " ")
+temp
 #Create Matrix 
 mat  <- matrix(unlist(temp), ncol=2, byrow=TRUE)
+
+mat
 #convert Matrix into Data.Frame
 df   <- as.data.frame(mat)
+
+df
 #combine with phone number
+
 df   <- cbind(df, phone)
 #give valid name to column name
 colnames(df) <- c("First_name", "Last_name", "Phone")

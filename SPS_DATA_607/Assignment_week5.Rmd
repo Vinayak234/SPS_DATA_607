@@ -1,0 +1,83 @@
+---
+title: 'DATA 607:  Tidying Data Transforming Data, Week 5'
+author: "VINAYAK PATEL"
+date: "September 29, 2018"
+output: html_document
+theme: lumen
+---
+
+## Abstract
+
+In this project, goal is to read a .csv of  data showing counts of whether two airlines were on time or delayed flying into multiple destinations, transform and tidy the data, and then do an analysis to compare the arrival delays for both airlines.  
+
+## Preparation
+### prerequisite
+
+```{r, warning=FALSE, message=FALSE}
+library('dplyr')
+library('tidyr')
+```
+
+### Data Import
+
+```{r}
+df <- read.csv("airline.csv", header=TRUE,stringsAsFactors = FALSE)
+df
+
+```
+
+## Data Transformation
+
+```{r}
+#add missing data
+df[2, 1] <- "ALASKA"
+df[5, 1] <- "AMWEST"
+df
+data_long <- gather(df, city, number, LosAngeles:Seattle, factor_key=TRUE)
+
+# rename column name.
+colnames(data_long)[2] <- "status" 
+colnames(data_long)[1] <- "Airline"
+data_long$Airline <- factor(data_long$Airline)
+data_long
+
+# remove NA
+clean_data <- data_long %>%
+  filter(!is.na(number))
+clean_data
+
+
+```
+
+## Data Analysis
+
+```{r}
+clean_data<-spread(clean_data, "status" , number)
+clean_data
+
+```
+
+```{r}
+analysis <- as.data.frame(clean_data %>%
+  mutate(total = delayed + `on time`) %>%
+  group_by(Airline) %>%
+  summarise(delayed_total = sum(delayed), 
+            on_time_total = sum(`on time`),
+            count_total = sum(total),
+            percent_ontime = round(on_time_total/count_total*100,digit = 2)))
+analysis
+    
+
+```
+
+
+### chart 
+```{r}
+dotchart(analysis$percent_ontime, labels=analysis$airline, main = "percent of online time Flights Across All Cities")
+
+```
+
+## Conclusion
+
+The individual city delay ratios by airline show that ALASKA airlines had a lower individual delay ratio than AMWEST in every single city.   However the aggregated data shows that AMWEST is mostly on-time airline, due to the larger volume of flights.   
+

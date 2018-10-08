@@ -1,0 +1,212 @@
+---
+title: 'DATA 607:  Tidy Data, Project 2'
+author: "VINAYAK PATEL"
+date: "October 7, 2018"
+output:  
+  rmarkdown::html_document:
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Environment Prep
+
+```{r, warning=FALSE, message=FALSE}
+if (!require('dplyr')) install.packages('dplyr')
+if (!require('tidyr')) install.packages('tidyr')
+if (!require('DT')) install.packages('DT')
+if (!require('ggplot2')) install.packages('ggplot2')
+if (!require('xlsx')) install.packages('xlsx')
+if (!require('reshape2')) install.packages('reshape2')
+```
+# Dataset 1: Occupational Wages for the New York City Region
+
+* __Ref:__   labor.ny.gov
+* __Data Source:__ Employment and wage data by occupation are based on the Occupational Employment Statistics (OES) survey, which collects information from approximately 51,000 businesses. Estimates are based on responses from six semi-annual panels collected between November 2014 and May 2017. Wages were then updated to the first quarter of 2018 by making cost-of-living adjustments. Occupational employment and wages are presented for New York State and its 10 labor market regions.
+* __Data Citation:__ Occupational Wages for the New York City Region: November,2014 and May, 2017
+Source: labor.ny.gov 
+* __Additional Information:__ [The entire set of currently available OES employment and wage data is available by downloading the file](https://labor.ny.gov/stats/lswage2.asp)
+
+## Abstract
+
+Let's revise the original question offerings, knowing that these are projections based on sample data of 51000 business. 
+* Most no.jobs available at based on occupations category?
+* Which top 10 jobs are high paying job?
+
+## Data Import
+
+```{r, comment=NA}
+labor <- read.csv("wagesCSV.csv", header=TRUE,stringsAsFactors = FALSE)
+datatable(labor)
+
+```
+## Data Prep
+
+
+```{r}
+#remove NA
+df<- na.omit(labor)
+datatable(df)
+
+# delete All Total in category 
+clean_data<- df[!grepl("-0000", df$SOCCode),]
+datatable(clean_data)
+```
+
+## Analysis (Including Plots)
+
+```{r, fig.width=10}
+#for top 10 occupations by avalible job 
+df_e<-as.data.frame(head(arrange(clean_data,desc(Employment)), n = 10))
+lst_Employ <- df_e[] %>% 
+    select(Title, Employment) 
+
+# Plot
+lst_Employ[] %>%
+  arrange(Employment) %>%
+  mutate(Title=factor(Title, levels=Title)) %>%
+  ggplot( aes(x=Title, y=Employment)) +
+    geom_segment( aes(xend=Title, yend=1)) +
+    geom_point( size=4, color="orange") +
+    coord_flip() + labs(title="Top 10 Occupations by avalible jobs") +
+    theme_minimal()
+
+#Higest Paying job
+highest_mean<-as.data.frame(head(arrange(clean_data,desc(Mean)), n = 10))
+datatable(highest_mean)
+
+
+highest_mean[] %>%
+  arrange(Mean) %>%
+  mutate(Title=factor(Title, levels=Title)) %>%
+  ggplot( aes(x=Title, y=Mean)) +
+    geom_segment( aes(xend=Title, yend=1)) +
+    geom_point( size=4, color="orange") +
+    coord_flip() + labs(title="Top 10 Occupations by Highest Mean Salary")+ 
+    theme_minimal()
+
+```
+
+# Dataset 2:  Predicting The Mega Millions Lottery 
+
+* __Data Source:__ UCI ML Repository [Source](https://catalog.data.gov/dataset/lottery-mega-millions-winning-numbers-beginning-2002)
+* __Data Citation:__ Data.gov [Link](https://catalog.data.gov/dataset/lottery-mega-millions-winning-numbers-beginning-2002)
+
+## Abstract
+Can you really predict the winning lottery numbers? 
+I am going to find some of the most common winning lottery numbers in last 10 years. 
+
+## Data Import
+
+Lottery Mega Millions Winning Numbers: Beginning 2002. I used that file to create the .csv imported below. 
+
+```{r, comment=NA}
+lotto <- read.csv("Lottery_Mega_Millions_Winning_Numbers__Beginning_2002.csv", header=TRUE,stringsAsFactors = FALSE)
+head(lotto, n=20)
+```
+
+## Data Prep
+
+We are only interested in a few variables here, Winning Numbers And Mega Ball Numbers from 2008. we will omit old data Because of the way the Winning Number are merged in one column, it is not usable data.
+
+```{r}
+# deleting old data
+new_data<- lotto[!grepl("/2002", lotto$Draw.Date),] 
+new_data<- new_data[!grepl("/2003", new_data$Draw.Date),]
+new_data<- new_data[!grepl("/2004", new_data$Draw.Date),]
+new_data<- new_data[!grepl("/2005", new_data$Draw.Date),]
+new_data<- new_data[!grepl("/2006", new_data$Draw.Date),]
+new_data<- new_data[!grepl("/2007", new_data$Draw.Date),]
+head(new_data)
+
+#Selecting Winning Number Column
+lotto_No <- as.data.frame(new_data[ ]%>% 
+    select(Winning.Numbers))
+head(lotto_No)
+
+#Seleting Mega Ball Number Column
+mega_ball<-as.data.frame(new_data[ ]%>% 
+    select(Mega.Ball))
+head(mega_ball)
+
+#seperating each Numbers
+temp <- strsplit(lotto_No$Winning.Numbers, " ")
+
+#data frame by occurence
+Number_frequecy  <- as.data.frame(table(unlist(temp)))
+head(Number_frequecy) 
+
+# mega ball 
+Mega_ball_Frequency <-as.data.frame(table(mega_ball))
+head(Mega_ball_Frequency)
+
+#most common five numbers occurence in winning numbers is 
+most_won_no <- head(arrange(Number_frequecy,desc(Freq)), n = 5)
+five_number <- c(sort(most_won_no$Var1))
+five_number
+# most occured mega ball Number
+tmp <- Mega_ball_Frequency[Mega_ball_Frequency$Freq == (max(Mega_ball_Frequency$Freq)), ]
+p_mega <- c(tmp$mega_ball)
+p_mega
+
+```
+
+# Dataset 3: New York City Leading Causes of Death
+
+## Abstract
+The leading causes of death by sex and ethnicity in New York City in since 2007.
+
+I am going to find some of fact behind causes of death. 
+
+## Data Import
+The leading causes of death by sex and ethnicity in New York City in since 2007. I used that file to create the .csv imported below. 
+
+```{r, comment=NA}
+df <- read.csv("New_York_City_Leading_Causes_of_Death.csv", header=TRUE,stringsAsFactors = FALSE)
+datatable(head(df, n=20))
+```
+
+## Data Prep
+```{r, fig.width=10, fig.height=10}
+#remove NA
+ny_cause_death<- na.omit(df)
+datatable(ny_cause_death)
+
+#2014
+data_2014<- ny_cause_death[grepl("2014", ny_cause_death$Year),] 
+
+data_2014<- as.data.frame(data_2014[ ]%>% 
+    select( Leading.Cause, Sex,Race.Ethnicity,Death.Rate ))
+
+
+data_2014$Race.Ethnicity <-factor(data_2014$Race.Ethnicity)
+data_2014$Sex<-factor(data_2014$Sex)
+data_2014$Leading.Cause<-factor(data_2014$Leading.Cause)
+
+
+xx<-spread(data_2014, Sex, Death.Rate)
+xx<-na.omit(xx)
+datatable(xx)
+
+x1<-spread(data_2014, Race.Ethnicity, Death.Rate)
+x1<-na.omit(x1)
+datatable(x1)
+
+#2014 male
+data_2014_male <-x1[grepl("M", x1$Sex),]
+datatable(data_2014_male)
+
+
+
+#2014 female
+data_2014_female <-x1[!grepl("M", x1$Sex),]
+datatable(data_2014_female)
+
+
+
+ggplot(data_2014, aes(fill=Race.Ethnicity, y=Death.Rate, x=Leading.Cause)) + geom_bar(position="dodge", stat="identity")+theme(axis.text.x = element_text(angle=90, hjust=1))
+
+```
+# result
+Disease 0f hearts
