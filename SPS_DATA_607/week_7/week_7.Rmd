@@ -10,42 +10,62 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Abstract
-
-Our goal in this lesson is to create a list of books stored in an HTML table, an XML file, and a JSON file and use R to read and parse the files and store in 3 data frames.   We should then review the resulting data frames and note any differences.  
+In the asssignment, I created a list of books stored in an HTML table, an XML file, and a JSON file and use R to read and parse the files and store in 3 data frames.   We should then review the resulting data frames and note any differences.  
 
 # Environment Prep
 ```{r, warning=FALSE, message=FALSE}
 if (!require('rvest')) install.packages('rvest')
 if (!require('XML')) install.packages('XML')
 if (!require('jsonlite')) install.packages('jsonlite')
+if (!require('RCurl')) install.packages('RCurl')
+if (!require('rlist')) install.packages('rlist')
+if (!require('magrittr')) install.packages('magrittr')
+if (!require('tidyverse')) install.packages('tidyverse')
+if (!require('RJSONIO')) install.packages('RJSONIO')
+if (!require('DT')) install.packages('DT')
+
 ```
 
 # Importing
 ## HTML Table
 ```{r}
-h <- readHTMLTable("books.html")
-h
-html_dataframe <- as.data.frame(h)
-knitr::kable(html_dataframe)
+html_link <- getURL("https://raw.githubusercontent.com/Vinayak234/SPS_DATA_607/master/SPS_DATA_607/week_7/books.html") %>% 
+  read_html() %>% 
+  html_nodes( xpath="//table")
+
+df_html <-html_table((html_link))[[1]]
+datatable(df_html)
+
 ```
 
 ## XML
 ```{r}
 library(xml2)
-xm <- xmlParse("books.xml")
-#x.df <- xmlToDataFrame(x)
+xml_link <- getURL("https://raw.githubusercontent.com/Vinayak234/SPS_DATA_607/master/SPS_DATA_607/week_7/books.xml")
+xml_parsed <-xmlParse(xml_link)
 
-xmldf <- xmlToDataFrame(xm)
 
-knitr::kable(xmldf)
+xml_root <- xmlRoot(xml_parsed)
+
+df_xml <- xmlToDataFrame(xml_root, stringsAsFactors = FALSE)
+datatable(df_xml)
+
+
 ```
 
 ## JSON
 ```{r}
-j <- fromJSON("books.json")
-j.df <- do.call("rbind", lapply(j, data.frame, stringsAsFactors=FALSE))
-rownames(j.df) <- NULL
-knitr::kable(j.df)
+json_link <- fromJSON(getURL("https://raw.githubusercontent.com/Vinayak234/SPS_DATA_607/master/SPS_DATA_607/week_7/books.json"))
+temp_1 <- as.data.frame(json_link, stringsAsFactors = FALSE)[1,1:6]
+temp_2 <- as.data.frame(json_link, stringsAsFactors = FALSE)[1,7:12]
+temp_3 <- as.data.frame(json_link, stringsAsFactors = FALSE)[1,13:18]
+
+names(temp_2) <- names(temp_1)
+names(temp_3) <- names(temp_1)
+df_json <- rbind(temp_1,temp_2,temp_3)
+datatable(df_json)
+
+
 ```
 
 # Testing Similarity
@@ -54,18 +74,27 @@ They all look equivalent to the eye, but are they?   We can use the base package
 
 ## HTML to XML
 ```{r}
-all.equal(html_dataframe, xmldf)
+all.equal(df_html, df_xml)
 ```
 
 ## HTML to JSON
 ```{r}
-all.equal(html_dataframe, j.df)
+all.equal(df_html, df_json)
 ```
 
 ## XML to JSON
 ```{r}
-all.equal(xmldf, j.df)
+all.equal(df_xml, df_json)
 ```
-
+## Summary
+```{r}
+summary(df_html)
+summary(df_xml)
+summary(df_json)
+```
 # Conclusion
-While the characters in each of the data frames are essentially the same, it would take some additional work to make them completely equivalent.  The classes have slight differences, most notably the xml import method resulted in each variable being a factor.  
+While the characters in each of the data frames are essentially the same, but data type are different.  The classes have slight differences, most notably the xml import method resulted in each variable being a characters.  
+
+
+## reference 
+Jeff Littlejohn
