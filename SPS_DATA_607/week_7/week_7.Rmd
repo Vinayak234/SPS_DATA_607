@@ -1,0 +1,71 @@
+---
+title: 'DATA 607: Week 7 HTML, XML, JSON'
+author: "VINAYAK PATEL"
+date: "October 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Abstract
+
+Our goal in this lesson is to create a list of books stored in an HTML table, an XML file, and a JSON file and use R to read and parse the files and store in 3 data frames.   We should then review the resulting data frames and note any differences.  
+
+# Environment Prep
+```{r, warning=FALSE, message=FALSE}
+if (!require('rvest')) install.packages('rvest')
+if (!require('XML')) install.packages('XML')
+if (!require('jsonlite')) install.packages('jsonlite')
+```
+
+# Importing
+## HTML Table
+```{r}
+h <- readHTMLTable("books.html")
+h
+html_dataframe <- as.data.frame(h)
+knitr::kable(html_dataframe)
+```
+
+## XML
+```{r}
+library(xml2)
+xm <- xmlParse("books.xml")
+#x.df <- xmlToDataFrame(x)
+
+xmldf <- xmlToDataFrame(xm)
+
+knitr::kable(xmldf)
+```
+
+## JSON
+```{r}
+j <- fromJSON("books.json")
+j.df <- do.call("rbind", lapply(j, data.frame, stringsAsFactors=FALSE))
+rownames(j.df) <- NULL
+knitr::kable(j.df)
+```
+
+# Testing Similarity
+
+They all look equivalent to the eye, but are they?   We can use the base package function 'all.equal' to test.    
+
+## HTML to XML
+```{r}
+all.equal(html_dataframe, xmldf)
+```
+
+## HTML to JSON
+```{r}
+all.equal(html_dataframe, j.df)
+```
+
+## XML to JSON
+```{r}
+all.equal(xmldf, j.df)
+```
+
+# Conclusion
+While the characters in each of the data frames are essentially the same, it would take some additional work to make them completely equivalent.  The classes have slight differences, most notably the xml import method resulted in each variable being a factor.  

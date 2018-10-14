@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rbooklist>
+   <book id="1">
+      <title>Advanced R</title>
+      <year>2015</year>
+      <author>Hadley Wickham</author>
+      <publisher>CRC Press</publisher>
+      <pages>476</pages>
+      <ISBN>1466586966</ISBN>
+   </book>
+   <book id="2">
+      <title>R in Action</title>
+      <year>2011</year>
+      <author>Robert I. Kabacoff</author>
+      <publisher>Manning Publications</publisher>
+      <pages>472</pages>
+      <ISBN>9781935182399</ISBN>
+   </book>
+   <book id="3">
+      <title>Automated Data Collection in R</title>
+      <year>2015</year>
+      <author>Simon Munzert, Christian Rubba, Peter Meissner, Dominic Nyhuis</author>
+      <publisher>Wiley Press</publisher>
+      <pages>480</pages>
+      <ISBN>111883481X</ISBN>
+   </book>
+</rbooklist>

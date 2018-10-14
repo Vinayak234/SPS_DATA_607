@@ -90,7 +90,7 @@ highest_mean[] %>%
 
 # Dataset 2:  Predicting The Mega Millions Lottery 
 
-* __Data Source:__ UCI ML Repository [Source](https://catalog.data.gov/dataset/lottery-mega-millions-winning-numbers-beginning-2002)
+* __Data Source:__ Lottery Mega Millions Winning Numbers Repository [Source](https://catalog.data.gov/dataset/lottery-mega-millions-winning-numbers-beginning-2002)
 * __Data Citation:__ Data.gov [Link](https://catalog.data.gov/dataset/lottery-mega-millions-winning-numbers-beginning-2002)
 
 ## Abstract
@@ -106,7 +106,7 @@ lotto <- read.csv("Lottery_Mega_Millions_Winning_Numbers__Beginning_2002.csv", h
 head(lotto, n=20)
 ```
 
-## Data Prep
+##  Data Prep
 
 We are only interested in a few variables here, Winning Numbers And Mega Ball Numbers from 2008. we will omit old data Because of the way the Winning Number are merged in one column, it is not usable data.
 
@@ -151,6 +151,8 @@ p_mega <- c(tmp$mega_ball)
 p_mega
 
 ```
+## Result
+### Most five winning numbers and Mega Ball are **`r five_number[1:5]`    AND   `r p_mega`**
 
 # Dataset 3: New York City Leading Causes of Death
 
@@ -207,6 +209,24 @@ datatable(data_2014_female)
 
 ggplot(data_2014, aes(fill=Race.Ethnicity, y=Death.Rate, x=Leading.Cause)) + geom_bar(position="dodge", stat="identity")+theme(axis.text.x = element_text(angle=90, hjust=1))
 
+
+
 ```
-# result
-Disease 0f hearts
+
+## result
+
+```{r}
+Heart<-x1[grepl("Diseases of Heart", x1$Leading.Cause),]
+Heart
+a<- mutate(Heart, total= rowSums (Heart[3:6], na.rm = FALSE, dims = 1))
+datatable(a)
+
+ratio <- a[[2,7]]/a[[1,7]]
+
+pie(a$total, labels = c("Female","Male"), radius = 1, main= "Diseases of Heart")
+
+```
+
+### Ratio of heart disease between males and females is `r ratio` : 1 
+
+
