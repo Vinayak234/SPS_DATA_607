@@ -174,12 +174,24 @@ clean_rawData_Neccecery_Language
 clean_rawData_helpful <- clean_rawData %>%
   select(How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...Blogs.:How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...YouTube.Videos.)
 
-clean_rawData_helpful$lid <- seq.int(nrow(clean_rawData_helpful))
+clean_rawData_helpful$id <- seq.int(nrow(clean_rawData_helpful))
 clean_rawData_helpful
 
+clean_rawData_helpful <- gather(clean_rawData_helpful, platforms, How.useful,
+                                How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...Blogs.:How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...YouTube.Videos.) %>%
+                          arrange(id) %>%
+  group_by(platforms) %>%
+filter(How.useful!='NA', How.useful!='')
+(clean_rawData_helpful)
 
 
-
+ggplot(data = clean_rawData_helpful,aes(platforms,How.useful))+
+  geom_bar(stat = 'identity',aes(fill=How.useful))+  
+    labs(title = "Learning Platform Usage and Remarks", 
+                         x = "Learning Platform Type", 
+                         y = "Learners Sentiments") +
+theme_bw()+
+theme(axis.text.x = element_text(angle = 65, hjust = 1),axis.text.y=element_blank(),axis.ticks.y=element_blank())
 ```
 
 
