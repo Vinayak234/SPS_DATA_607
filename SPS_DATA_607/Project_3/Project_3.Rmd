@@ -61,87 +61,98 @@ This survey was conducted using Google Forms. Also, most of the respondents were
 ```{r}
 
 # Import survey data
-rawData <- read.csv('To find Most Valued Data Science Skills.csv', stringsAsFactors = TRUE, header = TRUE)
+
+
+rawData <- read.csv("https://raw.githubusercontent.com/Vinayak234/SPS_DATA_607/master/SPS_DATA_607/Project_3/To%20find%20Most%20Valued%20Data%20Science%20Skills.csv", stringsAsFactors = TRUE, header = TRUE)
 
 rawData
 
-# Dropping none IT professionals 
+# Dropping none IT professionals records
 clean_rawData<- rawData[!grepl("No", rawData$Are.you.related.to.IT.Profession.),]
-clean_rawData
+
+#Drop column not needed
+drops_c <- c("Timestamp","Are.you.related.to.IT.Profession.")
+clean_rawData<-clean_rawData[ , !(names(clean_rawData) %in% drops_c)]
+
+head(clean_rawData)
+
+#Short name for column name
+Short_name <- c("Gender","Country","Age","Are you in School","Eduction","Major","Are you learning data science skill","Emplyment Status","Title","Experience","Blogs","College","Projects", "Online Course", "Friends","Co-workers","Youtube","Textbooks","First language","must language","Amazon Machine Learning","Big Data","College Degree","Data Visualizations","Enterprise Tools","Google Cloud","Hadoop/Hive/Pig","IBM SPSS","Java","Microsoft Excel","NoSQL","Oracle Data Mining","Python","R","Relational data","SAS","SQL","Tableau",
+"Intellectual curiosity","Business acumen", "Communication skills","Teamwork","Collaboration","Creative Thinking","Problem Solving", "Active Learning","Perceptiveness","Interpersonal Skills","Generating Hypotheses")
+
+colnames(clean_rawData) <- Short_name
+head(clean_rawData)
+
+
+#VIEW THE DATA AND CREATE NAMES
+summary(clean_rawData)
+
 
 
 ```
-
 
 ## Gender, Demograph, and Age Information
 
+```{r message=FALSE}
 
-```{r niteen01, echo=FALSE,warning=FALSE, cache=FALSE, message=FALSE}
+#to see how many of the participants were male or female by their age
+DataGender <- clean_rawData%>%
+  select(Gender, Age) %>%
+  filter(trimws(clean_rawData$Country)!='',Age!='NA') %>%
+  group_by(Age,Gender) %>%
+  summarise(count=n()) %>%
+  arrange(desc(count))
 
-DemoGraphicsData <- clean_rawData%>%
-  select(Gender,Select.the.country.you.currently.live.in.,What.s.your.age.) %>%
-  filter(Select.the.country.you.currently.live.in.!='NA',trimws(Select.the.country.you.currently.live.in.)!='',What.s.your.age.!='NA',trimws(Gender) %in% c('Male','Female'))
-
+DataGender
 
 ```
 
 
 ```{r}
-DemoGraphicsDataGender.plot <- DemoGraphicsData %>%
-    group_by(What.s.your.age.,Gender) %>%
-    summarise(count=n()) %>%
-    arrange(desc(count))
-DemoGraphicsDataGender.plot
-
-
+# Plot
 library(ggplot2)
-ggplot(data = DemoGraphicsDataGender.plot, 
-       mapping = aes(x = What.s.your.age., fill = Gender, 
-                     y = ifelse(test = Gender == "Male", 
+ggplot(data = DataGender, 
+       mapping = aes(x = Age, fill = Gender, 
+                     y = ifelse(test = Gender == "Female", 
                                 yes = -count, no = count)))+
   geom_bar(stat = "identity") +
-  scale_y_continuous(labels = abs, limits = max(DemoGraphicsDataGender.plot$count) * c(-1,1)) +
-  labs(y = "Count") +
-  coord_flip()+
-  theme_bw()
+  scale_y_continuous(labels = abs) +
+  labs(y="Count") 
 
 ```
 
 ```{r}
-
-DemoGraphicsDataCountry <- DemoGraphicsData %>%
-  group_by(Select.the.country.you.currently.live.in.)%>%
-  summarise(count=n()) %>%
+DemoGraphicsData <- clean_rawData %>%
+  group_by(Country)%>% # Group by country
+  summarise(count=n()) %>%# Count how many respondents selected each option
   mutate(percent = (count / sum(count)) * 100) %>%     
-  arrange(desc(count))
+  arrange(desc(count))# Arrange the counts in descending order
  
-DemoGraphicsDataCountry
+DemoGraphicsData
+
+#plot graph
+DemoGraphicsData[] %>%
+  arrange(count) %>%
+  mutate(Country=factor(Country, levels=Country)) %>%
+  ggplot( aes(x=Country, y=count)) +
+    geom_segment( aes(xend=Country, yend=0)) +
+    geom_point( size=2, color="orange") +
+    coord_flip() + labs(title="plot by Country")+ 
+    theme_minimal()
 
 ```
 
+
+
+
 ```{r}
-
-
-
-DemoGraphicsDataCountry <- DemoGraphicsData %>%
-  # Remove any rows where the respondent didn't answer the question
-  # Group by the responses to the question
-  group_by(Select.the.country.you.currently.live.in.)%>%
-  # Count how many respondents selected each option
-  summarise(count=n()) %>%
-  # Arrange the counts in descending order
-  arrange(desc(count))
-
-
-
-
 # to findout most recommanded language
 
 clean_rawData_First_Language <- clean_rawData %>%  
     # Remove any rows where the respondent didn't answer the question
-    filter(trimws(What.programming.language.would.you.recommend.most.to.learn.first.to.new.data.scientist.)!='')%>%
+    filter(trimws(clean_rawData$`First language`)!='')%>%
     # Group by the responses to the question
-    group_by(What.programming.language.would.you.recommend.most.to.learn.first.to.new.data.scientist.) %>% 
+    group_by(`First language`) %>% 
     # Count how many respondents selected each option
     summarise(count = n()) %>% 
     # Calculate what percent of respondents selected each option
@@ -151,13 +162,13 @@ clean_rawData_First_Language <- clean_rawData %>%
 
 clean_rawData_First_Language
 
-# to findout most recommanded language
+# to findout have to learn language
 
 clean_rawData_Neccecery_Language <- clean_rawData %>%  
     # Remove any rows where the respondent didn't answer the question
-  filter(trimws(What.programming.language.would.you.recommend.must.need.to.have.as.data.scientist.)!='')%>%
+  filter(trimws(clean_rawData$`must language`)!='')%>%
   # Group by the responses to the question
-  group_by(What.programming.language.would.you.recommend.must.need.to.have.as.data.scientist.) %>% 
+  group_by(`must language`) %>% 
   # Count how many respondents selected each option
   summarise(count = n()) %>% 
   # Calculate what percent of respondents selected each option
@@ -172,30 +183,40 @@ clean_rawData_Neccecery_Language
 ## To find out helpfulness of Learning way 
 ```{r}
 clean_rawData_helpful <- clean_rawData %>%
-  select(How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...Blogs.:How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...YouTube.Videos.)
+  select(Blogs:Textbooks)
 
-clean_rawData_helpful$id <- seq.int(nrow(clean_rawData_helpful))
 clean_rawData_helpful
 
+
+clean_rawData_helpful$id <- seq.int(nrow(clean_rawData_helpful))
+
 clean_rawData_helpful <- gather(clean_rawData_helpful, platforms, How.useful,
-                                How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...Blogs.:How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...YouTube.Videos.) %>%
-                          arrange(id) %>%
+                                Blogs:Textbooks) %>%
+  arrange(id) %>%
   group_by(platforms) %>%
-filter(How.useful!='NA', How.useful!='')
-(clean_rawData_helpful)
+  filter(How.useful!='NA', How.useful!='')
+
+clean_rawData_helpful
+
 ```
 
-```{r fig.width=10, fig.height=10}
+```{r fig.width=10, fig.height=5}
 
-ggplot(data = clean_rawData_helpful,aes(platforms,How.useful))+
-  geom_bar(stat = 'identity',aes(fill=How.useful))+  
+ggplot(data = clean_rawData_helpful,aes(fill=How.useful, platforms, How.useful))+
+  geom_bar(stat = 'identity')+  
     labs(title = "How useful these platforms are for New data scientist", 
                          x = "Platforms ", 
                          y = "How useful") +
 theme_bw()+
-theme(axis.text.x = element_text(angle = 65, hjust = 1),axis.text.y=element_blank())
+theme(axis.text.x = element_text(),axis.text.y=element_blank(),axis.ticks.y=element_blank())
 ```
 
+
+## Result 
+Analysis on
+
+
+## Third
 
 
 
