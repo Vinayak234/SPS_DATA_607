@@ -183,15 +183,17 @@ clean_rawData_helpful <- gather(clean_rawData_helpful, platforms, How.useful,
   group_by(platforms) %>%
 filter(How.useful!='NA', How.useful!='')
 (clean_rawData_helpful)
+```
 
+```{r fig.width=10, fig.height=10}
 
 ggplot(data = clean_rawData_helpful,aes(platforms,How.useful))+
   geom_bar(stat = 'identity',aes(fill=How.useful))+  
-    labs(title = "Learning Platform Usage and Remarks", 
-                         x = "Learning Platform Type", 
-                         y = "Learners Sentiments") +
+    labs(title = "How useful these platforms are for New data scientist", 
+                         x = "Platforms ", 
+                         y = "How useful") +
 theme_bw()+
-theme(axis.text.x = element_text(angle = 65, hjust = 1),axis.text.y=element_blank(),axis.ticks.y=element_blank())
+theme(axis.text.x = element_text(angle = 65, hjust = 1),axis.text.y=element_blank())
 ```
 
 
