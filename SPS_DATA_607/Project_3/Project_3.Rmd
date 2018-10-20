@@ -73,11 +73,8 @@ clean_rawData
 ```
 
 
-## Demographics Information
+## Gender, Demograph, and Age Information
 
-Variables: Country, GenderSelect & Age <br>
-
-Demographics Insight:
 
 ```{r niteen01, echo=FALSE,warning=FALSE, cache=FALSE, message=FALSE}
 
