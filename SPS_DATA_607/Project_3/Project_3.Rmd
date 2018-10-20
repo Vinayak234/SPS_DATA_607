@@ -1,0 +1,192 @@
+---
+title: 'Data 607: Project 3'
+author: "VINAYAK PATEL"
+date: "October 19, 2018"
+output:
+  html_document:
+    collapsed: FALSE
+    theme: cosmo
+    toc: yes
+    toc_float: no
+    toc_depth: 2
+    df_print: paged
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Environment Prep
+```{r, warning=FALSE, message=FALSE}
+if (!require('rvest')) install.packages('rvest')
+if (!require('XML')) install.packages('XML')
+if (!require('jsonlite')) install.packages('jsonlite')
+if (!require('RCurl')) install.packages('RCurl')
+if (!require('rlist')) install.packages('rlist')
+if (!require('magrittr')) install.packages('magrittr')
+if (!require('tidyverse')) install.packages('tidyverse')
+if (!require('RJSONIO')) install.packages('RJSONIO')
+if (!require('DT')) install.packages('DT')
+
+```
+
+# Abstract
+
+##Context
+ 
+<br>   For the project 3, we have decided to conduct survey to find out the necessary soft-skills, and technical skills. Which programming language is need to learn first, and which programming language is necessary to be successful Data Scientist.
+
+<br>   Kaggle already has the wide survey available for the Data science and Machine learning with more than 16000 respondents but data scientist also needs to know how to conduct survey in order to generate own datasets. 
+
+# Data Source
+
+##Methodology
+<br>  This survey received 72 respondents from around the world. We will some excluded respondents who answered "No" to the question regarding their IT professional because these respondents can affect the overall analysis. even though this question was the first required question, so not answering it indicates that the respondent did not proceed further in survey and redirected to end of the survey.
+
+<br> The survey was taken during October 17 to October 20th. Most of the questions was not required because they can submit most information survey as many as they can and didn't forced to select unnecessary and wrong options. 
+
+## platform used
+This survey was conducted using Google Forms. Also, most of the respondents were from LinkedIn group: "Data Scientist & Analyst", "Database Administrator (+5000 DBAs from around the world) Join now!", and "Datacamp Community" Slack Channel. 
+
+
+# Research Question
+
+<br>
+
+## **Which are the most valued data science skills?**  
+
+# Importing data
+```{r}
+
+# Import survey data
+rawData <- read.csv('To find Most Valued Data Science Skills.csv', stringsAsFactors = TRUE, header = TRUE)
+
+rawData
+
+# Dropping none IT professionals 
+clean_rawData<- rawData[!grepl("No", rawData$Are.you.related.to.IT.Profession.),]
+clean_rawData
+
+
+```
+
+
+## Demographics Information
+
+Variables: Country, GenderSelect & Age <br>
+
+Demographics Insight:
+
+```{r niteen01, echo=FALSE,warning=FALSE, cache=FALSE, message=FALSE}
+
+DemoGraphicsData <- clean_rawData%>%
+  select(Gender,Select.the.country.you.currently.live.in.,What.s.your.age.) %>%
+  filter(Select.the.country.you.currently.live.in.!='NA',trimws(Select.the.country.you.currently.live.in.)!='',What.s.your.age.!='NA',trimws(Gender) %in% c('Male','Female'))
+
+
+```
+
+
+```{r}
+DemoGraphicsDataGender.plot <- DemoGraphicsData %>%
+    group_by(What.s.your.age.,Gender) %>%
+    summarise(count=n()) %>%
+    arrange(desc(count))
+DemoGraphicsDataGender.plot
+
+
+library(ggplot2)
+ggplot(data = DemoGraphicsDataGender.plot, 
+       mapping = aes(x = What.s.your.age., fill = Gender, 
+                     y = ifelse(test = Gender == "Male", 
+                                yes = -count, no = count)))+
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = abs, limits = max(DemoGraphicsDataGender.plot$count) * c(-1,1)) +
+  labs(y = "Count") +
+  coord_flip()+
+  theme_bw()
+
+```
+
+```{r}
+
+DemoGraphicsDataCountry <- DemoGraphicsData %>%
+  group_by(Select.the.country.you.currently.live.in.)%>%
+  summarise(count=n()) %>%
+  mutate(percent = (count / sum(count)) * 100) %>%     
+  arrange(desc(count))
+ 
+DemoGraphicsDataCountry
+
+```
+
+```{r}
+
+
+
+DemoGraphicsDataCountry <- DemoGraphicsData %>%
+  # Remove any rows where the respondent didn't answer the question
+  # Group by the responses to the question
+  group_by(Select.the.country.you.currently.live.in.)%>%
+  # Count how many respondents selected each option
+  summarise(count=n()) %>%
+  # Arrange the counts in descending order
+  arrange(desc(count))
+
+
+
+
+# to findout most recommanded language
+
+clean_rawData_First_Language <- clean_rawData %>%  
+    # Remove any rows where the respondent didn't answer the question
+    filter(trimws(What.programming.language.would.you.recommend.most.to.learn.first.to.new.data.scientist.)!='')%>%
+    # Group by the responses to the question
+    group_by(What.programming.language.would.you.recommend.most.to.learn.first.to.new.data.scientist.) %>% 
+    # Count how many respondents selected each option
+    summarise(count = n()) %>% 
+    # Calculate what percent of respondents selected each option
+    mutate(percent = (count / sum(count)) * 100) %>% 
+    # Arrange the counts in descending order
+    arrange(desc(count))
+
+clean_rawData_First_Language
+
+# to findout most recommanded language
+
+clean_rawData_Neccecery_Language <- clean_rawData %>%  
+    # Remove any rows where the respondent didn't answer the question
+  filter(trimws(What.programming.language.would.you.recommend.must.need.to.have.as.data.scientist.)!='')%>%
+  # Group by the responses to the question
+  group_by(What.programming.language.would.you.recommend.must.need.to.have.as.data.scientist.) %>% 
+  # Count how many respondents selected each option
+  summarise(count = n()) %>% 
+  # Calculate what percent of respondents selected each option
+  mutate(percent = (count / sum(count)) * 100) %>% 
+  # Arrange the counts in descending order
+  arrange(desc(count))
+
+clean_rawData_Neccecery_Language
+
+```
+
+## To find out helpfulness of Learning way 
+```{r}
+clean_rawData_helpful <- clean_rawData %>%
+  select(How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...Blogs.:How.useful.did.you.find.these.platforms...resources.for.learning.data.science.skills...YouTube.Videos.)
+
+clean_rawData_helpful$lid <- seq.int(nrow(clean_rawData_helpful))
+clean_rawData_helpful
+
+
+
+
+```
+
+
+
+
+
+
