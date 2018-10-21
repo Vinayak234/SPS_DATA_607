@@ -21,14 +21,15 @@ knitr::opts_chunk$set(echo = TRUE)
 # Environment Prep
 ```{r, warning=FALSE, message=FALSE}
 if (!require('rvest')) install.packages('rvest')
-if (!require('XML')) install.packages('XML')
-if (!require('jsonlite')) install.packages('jsonlite')
+if (!require('ggplot2')) install.packages('ggplot2')
+if (!require('car')) install.packages('car')
 if (!require('RCurl')) install.packages('RCurl')
 if (!require('rlist')) install.packages('rlist')
 if (!require('magrittr')) install.packages('magrittr')
 if (!require('tidyverse')) install.packages('tidyverse')
 if (!require('RJSONIO')) install.packages('RJSONIO')
 if (!require('DT')) install.packages('DT')
+if (!require('likert')) install.packages('likert')
 
 ```
 
@@ -63,7 +64,7 @@ This survey was conducted using Google Forms. Also, most of the respondents were
 # Import survey data
 
 
-rawData <- read.csv("https://raw.githubusercontent.com/Vinayak234/SPS_DATA_607/master/SPS_DATA_607/Project_3/To%20find%20Most%20Valued%20Data%20Science%20Skills.csv", stringsAsFactors = TRUE, header = TRUE)
+rawData <- read.csv("https://raw.githubusercontent.com/Vinayak234/SPS_DATA_607/master/SPS_DATA_607/Project_3/To%20find%20Most%20Valued%20Data%20Science%20Skills.csv", stringsAsFactors = FALSE, header = TRUE, na.strings = c("", "NA"))
 
 rawData
 
@@ -110,7 +111,7 @@ DataGender
 
 ```{r}
 # Plot
-library(ggplot2)
+
 ggplot(data = DataGender, 
        mapping = aes(x = Age, fill = Gender, 
                      y = ifelse(test = Gender == "Female", 
@@ -188,27 +189,39 @@ clean_rawData_helpful <- clean_rawData %>%
 clean_rawData_helpful
 
 
-clean_rawData_helpful$id <- seq.int(nrow(clean_rawData_helpful))
+#clean_rawData_helpful$id <- seq.int(nrow(clean_rawData_helpful))
 
-clean_rawData_helpful <- gather(clean_rawData_helpful, platforms, How.useful,
-                                Blogs:Textbooks) %>%
-  arrange(id) %>%
-  group_by(platforms) %>%
-  filter(How.useful!='NA', How.useful!='')
+#clean_rawData_helpful <- gather(clean_rawData_helpful, platforms, How.useful,Blogs:Textbooks) %>%
+#  arrange(id) %>%
+ # group_by(platforms) %>%
+#  filter(How.useful!='NA')
 
+clean_rawData_helpful<- na.omit(clean_rawData_helpful)
 clean_rawData_helpful
+
+summary(clean_rawData_helpful)
+
+clean_rawData_helpful$Blogs <- as.factor(clean_rawData_helpful$Blogs)
+clean_rawData_helpful$College <- as.factor(clean_rawData_helpful$College)
+clean_rawData_helpful$Projects <- as.factor(clean_rawData_helpful$Projects)
+clean_rawData_helpful$`Online Course` <- as.factor(clean_rawData_helpful$`Online Course`)
+clean_rawData_helpful$Friends <- as.factor(clean_rawData_helpful$Friends)
+clean_rawData_helpful$`Co-workers` <- as.factor(clean_rawData_helpful$`Co-workers`)
+clean_rawData_helpful$Youtube <- as.factor(clean_rawData_helpful$Youtube)
+clean_rawData_helpful$Textbooks <- as.factor(clean_rawData_helpful$Textbooks)
+
+
+
+# Realize the plot
+l28 <- likert(clean_rawData_helpful) 
+summary(l28) 
+plot(l28)
 
 ```
 
 ```{r fig.width=10, fig.height=5}
 
-ggplot(data = clean_rawData_helpful,aes(fill=How.useful, platforms, How.useful))+
-  geom_bar(stat = 'identity')+  
-    labs(title = "How useful these platforms are for New data scientist", 
-                         x = "Platforms ", 
-                         y = "How useful") +
-theme_bw()+
-theme(axis.text.x = element_text(),axis.text.y=element_blank(),axis.ticks.y=element_blank())
+
 ```
 
 
@@ -217,7 +230,49 @@ Analysis on
 
 
 ## Third
+Technical Skills needed
+```{r}
+library(car)
+Techdata <- clean_rawData %>%
+  select(`Amazon Machine Learning`:Tableau)
 
+Techdata
+Techdata<- na.omit(Techdata)
+Techdata
+
+#Techdata[] <- lapply(Techdata, factor)
+#Techdata
+
+
+Techdata[ ,1:18]  <- lapply(Techdata[ ,1:18],
+                             FUN = function(x) Recode(x, "'Nice to have' =1 ;'Necessary'=2 ;'Unnecessary' = 0"))
+
+
+Techdata
+
+temp1 <- names(Techdata)
+temp2<- list(colSums(Techdata))
+
+temp2<- data.frame(matrix(unlist(colSums(Techdata)), byrow=T))
+
+scale <- cbind(temp1,temp2)
+names(scale)[1] <-"Tech_Skill"
+names(scale)[2] <-"Rank"
+
+scale <- scale %>%
+  arrange(desc(Rank))
+scale
+
+#plot graph
+
+scale %>%
+  mutate(Tech_Skill = fct_reorder(Tech_Skill, Rank)) %>%
+  ggplot( aes(x=Tech_Skill, y=Rank)) +
+    geom_segment( aes(xend=Tech_Skill, yend=1)) +
+    geom_point( size=2, color="orange") +
+    coord_flip() + labs(title="Technical Skills Survey")+ 
+    theme_minimal()
+```
 
 
 
