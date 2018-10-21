@@ -10,15 +10,40 @@ output:
     toc_float: no
     toc_depth: 2
     df_print: paged
-
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      out.width = "90%"
+                      )
 ```
 
+# **Abstract**
 
-# Environment Prep
+<p style="margin-left: 40px"> For the project 3, we have decided to conduct survey and analyze the response to find out the necessary soft-skills, and technical skills. Also Which programming language is need to learn first, and which programming language is necessary to be successful Data Scientist. </p>
+
+# **Data Source**
+## Context
+ 
+<br>   
+
+<p style="margin-left: 40px"> Kaggle already has the wide survey available for the Data science and Machine learning with more than 16000 respondents but data scientist also needs to know how to conduct survey in order to generate own datasets. 
+</p>
+
+
+##Methodology
+<br>
+<p style="margin-left: 40px"> This survey received 72 respondents from around the world. We will some excluded respondents who answered "No" to the question regarding their IT professional because these respondents can affect the overall analysis. even though this question was the first required question, so not answering it indicates that the respondent did not proceed further in survey and redirected to end of the survey. </p>
+
+<br> 
+<p style="margin-left: 40px"> The survey was taken during October 17 to October 20th. Most of the questions was not required because they can submit most information survey as many as they can and didn't forced to select unnecessary and wrong options. </p>
+
+## platform used
+<p style="margin-left: 40px"> This survey was conducted using Google Forms. Also, most of the respondents were from LinkedIn group: "Data Scientist & Analyst", "Database Administrator (+5000 DBAs from around the world) Join now!", and "Datacamp Community" Slack Channel. </p>
+
+
+## Environment Prep
 ```{r, warning=FALSE, message=FALSE}
 if (!require('rvest')) install.packages('rvest')
 if (!require('ggplot2')) install.packages('ggplot2')
@@ -30,44 +55,18 @@ if (!require('tidyverse')) install.packages('tidyverse')
 if (!require('RJSONIO')) install.packages('RJSONIO')
 if (!require('DT')) install.packages('DT')
 if (!require('likert')) install.packages('likert')
-
 ```
 
-# Abstract
-
-##Context
- 
-<br>   For the project 3, we have decided to conduct survey to find out the necessary soft-skills, and technical skills. Which programming language is need to learn first, and which programming language is necessary to be successful Data Scientist.
-
-<br>   Kaggle already has the wide survey available for the Data science and Machine learning with more than 16000 respondents but data scientist also needs to know how to conduct survey in order to generate own datasets. 
-
-# Data Source
-
-##Methodology
-<br>  This survey received 72 respondents from around the world. We will some excluded respondents who answered "No" to the question regarding their IT professional because these respondents can affect the overall analysis. even though this question was the first required question, so not answering it indicates that the respondent did not proceed further in survey and redirected to end of the survey.
-
-<br> The survey was taken during October 17 to October 20th. Most of the questions was not required because they can submit most information survey as many as they can and didn't forced to select unnecessary and wrong options. 
-
-## platform used
-This survey was conducted using Google Forms. Also, most of the respondents were from LinkedIn group: "Data Scientist & Analyst", "Database Administrator (+5000 DBAs from around the world) Join now!", and "Datacamp Community" Slack Channel. 
-
-
-# Research Question
-
-<br>
-
-## **Which are the most valued data science skills?**  
 
 # Importing data
 ```{r}
-
 # Import survey data
-
-
 rawData <- read.csv("https://raw.githubusercontent.com/Vinayak234/SPS_DATA_607/master/SPS_DATA_607/Project_3/To%20find%20Most%20Valued%20Data%20Science%20Skills.csv", stringsAsFactors = FALSE, header = TRUE, na.strings = c("", "NA"))
 
 rawData
-
+```
+**Clean data**
+```{r}
 # Dropping none IT professionals records
 clean_rawData<- rawData[!grepl("No", rawData$Are.you.related.to.IT.Profession.),]
 
@@ -75,43 +74,49 @@ clean_rawData<- rawData[!grepl("No", rawData$Are.you.related.to.IT.Profession.),
 drops_c <- c("Timestamp","Are.you.related.to.IT.Profession.")
 clean_rawData<-clean_rawData[ , !(names(clean_rawData) %in% drops_c)]
 
-head(clean_rawData)
-
 #Short name for column name
-Short_name <- c("Gender","Country","Age","Are you in School","Eduction","Major","Are you learning data science skill","Emplyment Status","Title","Experience","Blogs","College","Projects", "Online Course", "Friends","Co-workers","Youtube","Textbooks","First language","must language","Amazon Machine Learning","Big Data","College Degree","Data Visualizations","Enterprise Tools","Google Cloud","Hadoop/Hive/Pig","IBM SPSS","Java","Microsoft Excel","NoSQL","Oracle Data Mining","Python","R","Relational data","SAS","SQL","Tableau",
-"Intellectual curiosity","Business acumen", "Communication skills","Teamwork","Collaboration","Creative Thinking","Problem Solving", "Active Learning","Perceptiveness","Interpersonal Skills","Generating Hypotheses")
+Short_name <- c("Gender","Country","Age","Are you in School","Eduction","Major","Are you learning data science skill","Emplyment Status", "Title", "Experience", "Blogs", "College","Projects", "Online Course", "Friends", "Co-workers", "Youtube","Textbooks","First language","must language","Amazon Machine Learning","Big Data","College Degree","Data Visualizations","Enterprise Tools","Google Cloud","Hadoop/Hive/Pig","IBM SPSS","Java","Microsoft Excel","NoSQL","Oracle Data Mining","Python","R","Relational data","SAS","SQL","Tableau","Intellectual curiosity","Business acumen", "Communication skills","Teamwork","Collaboration","Creative Thinking","Problem Solving", "Active Learning","Perceptiveness","Interpersonal Skills","Generating Hypotheses")
 
 colnames(clean_rawData) <- Short_name
 head(clean_rawData)
-
-
-#VIEW THE DATA AND CREATE NAMES
-summary(clean_rawData)
-
-
-
 ```
+# **Analysis ** 
 
-## Gender, Demograph, and Age Information
+## Gender, Demography, and Age Information
+<p style="margin-left: 40px"> **We are looking to find out gender ratio, demograpghy, and age information**  </p>
 
 ```{r message=FALSE}
 
-#to see how many of the participants were male or female by their age
+DataAge <- clean_rawData%>%
+  select(Age) %>%
+  filter(Age!='NA') %>%
+  group_by(Age) %>%
+  summarise(count=n()) %>%
+  arrange(desc(count))
+head(DataAge, n=5)
+
+Gender_ratio <- clean_rawData%>%
+  select(Gender)%>%
+  group_by(Gender)%>%
+  summarise(count=n())%>%
+  mutate(percent = (count / sum(count)) * 100) %>%
+  arrange(desc(count))
+
+Gender_ratio
+
+#to see how many of the participants were male or female by their age for the graph
 DataGender <- clean_rawData%>%
-  select(Gender, Age) %>%
+  select(Age,Gender) %>%
   filter(trimws(clean_rawData$Country)!='',Age!='NA') %>%
   group_by(Age,Gender) %>%
   summarise(count=n()) %>%
   arrange(desc(count))
 
-DataGender
-
 ```
 
 
-```{r}
+```{r fig.align = "center" }
 # Plot
-
 ggplot(data = DataGender, 
        mapping = aes(x = Age, fill = Gender, 
                      y = ifelse(test = Gender == "Female", 
@@ -119,9 +124,15 @@ ggplot(data = DataGender,
   geom_bar(stat = "identity") +
   scale_y_continuous(labels = abs) +
   labs(y="Count") 
-
 ```
+**Results**
+<br>
+<p style="margin-left: 40px"> From the findings, we can see the Majority of the participants Age are **`r DataAge[[1,1]]`**, **`r DataAge[[2,1]]`**,**`r DataAge[[3,1]]`** and there are **`r DataAge[[1,2]]`** from each Ages. </p>
+<br>
+<p style="margin-left: 40px"> Based on participants gender, we can see the Majority is  **`r Gender_ratio[[1,1]]`**. They are **`r Gender_ratio[[1,3]]`** percent compare to **`r Gender_ratio[[2,1]]`** which are only **`r Gender_ratio[[2,3]]`** percent. </p>
 
+
+**Demography** 
 ```{r}
 DemoGraphicsData <- clean_rawData %>%
   group_by(Country)%>% # Group by country
@@ -131,6 +142,11 @@ DemoGraphicsData <- clean_rawData %>%
  
 DemoGraphicsData
 
+```
+
+
+```{r fig.align = "center" }
+
 #plot graph
 DemoGraphicsData[] %>%
   arrange(count) %>%
@@ -138,18 +154,22 @@ DemoGraphicsData[] %>%
   ggplot( aes(x=Country, y=count)) +
     geom_segment( aes(xend=Country, yend=0)) +
     geom_point( size=2, color="orange") +
-    coord_flip() + labs(title="plot by Country")+ 
+    coord_flip() + labs(title="Participates by Country")+ 
     theme_minimal()
 
 ```
+**Results**
+<br>
+<p style="margin-left: 40px"> Based on participants country, we can see that there are **`r DemoGraphicsData[[1,2]]`** participants from **`r DemoGraphicsData[[1,1]]`** and at the seconds place, there are **`r DemoGraphicsData[[2,2]]`** participants from **`r DemoGraphicsData[[2,1]]`**. **`r DemoGraphicsData[[1,1]]`** is the majority by **`r DemoGraphicsData[[1,3]]`** of the all participants in survey.  </p>
 
-
-
-
+<hr>
+##Programming language 
+**Most recommend Programming language**
+<p style="margin-left: 40px"> We had asked participant to recommend the programming language, and we also asked them which programming language is necessary to know as data scientist  </p>
 ```{r}
-# to findout most recommanded language
+# to findout most recommend language
 
-clean_rawData_First_Language <- clean_rawData %>%  
+First_language <- clean_rawData %>%  
     # Remove any rows where the respondent didn't answer the question
     filter(trimws(clean_rawData$`First language`)!='')%>%
     # Group by the responses to the question
@@ -161,12 +181,15 @@ clean_rawData_First_Language <- clean_rawData %>%
     # Arrange the counts in descending order
     arrange(desc(count))
 
-clean_rawData_First_Language
+First_language
+```
 
+**Must needed Programming language**
+```{r}
 # to findout have to learn language
 
-clean_rawData_Neccecery_Language <- clean_rawData %>%  
-    # Remove any rows where the respondent didn't answer the question
+Neccecery_language <- clean_rawData %>%  
+  # Remove any rows where the respondent didn't answer the question
   filter(trimws(clean_rawData$`must language`)!='')%>%
   # Group by the responses to the question
   group_by(`must language`) %>% 
@@ -177,76 +200,64 @@ clean_rawData_Neccecery_Language <- clean_rawData %>%
   # Arrange the counts in descending order
   arrange(desc(count))
 
-clean_rawData_Neccecery_Language
+Neccecery_language
 
 ```
+**Results**
+<br>
+<p style="margin-left: 40px"> As a result, it is clear that **`r First_language[[1,1]] `** is most recommended programming language for Data Scientist. There are **`r First_language[[1,3]] `** percent participants who recommend the language. And, Second most recommended programming language is **`r First_language[[2,1]] `** with **`r First_language[[2,3]] `** percent votes. </p>
+<br>
+<p style="margin-left: 40px"> 
+Also, result suggests that **`r Neccecery_language[[1,3]]`** percent of participants thinks **`r Neccecery_language[[1,1]] `** is must needed language. Second is **`r Neccecery_language[[2,1]] `** with **`r Neccecery_language[[2,3]] `** percent. 
+</p>
+<hr>
 
-## To find out helpfulness of Learning way 
+## To find out helpfulness of diffenent way to learn 
 ```{r}
 clean_rawData_helpful <- clean_rawData %>%
   select(Blogs:Textbooks)
 
 clean_rawData_helpful
 
-
-#clean_rawData_helpful$id <- seq.int(nrow(clean_rawData_helpful))
-
-#clean_rawData_helpful <- gather(clean_rawData_helpful, platforms, How.useful,Blogs:Textbooks) %>%
-#  arrange(id) %>%
- # group_by(platforms) %>%
-#  filter(How.useful!='NA')
-
+#clean record
 clean_rawData_helpful<- na.omit(clean_rawData_helpful)
+
+clean_rawData_helpful[] <- lapply(clean_rawData_helpful, factor)
 clean_rawData_helpful
 
-summary(clean_rawData_helpful)
-
-clean_rawData_helpful$Blogs <- as.factor(clean_rawData_helpful$Blogs)
-clean_rawData_helpful$College <- as.factor(clean_rawData_helpful$College)
-clean_rawData_helpful$Projects <- as.factor(clean_rawData_helpful$Projects)
-clean_rawData_helpful$`Online Course` <- as.factor(clean_rawData_helpful$`Online Course`)
-clean_rawData_helpful$Friends <- as.factor(clean_rawData_helpful$Friends)
-clean_rawData_helpful$`Co-workers` <- as.factor(clean_rawData_helpful$`Co-workers`)
-clean_rawData_helpful$Youtube <- as.factor(clean_rawData_helpful$Youtube)
-clean_rawData_helpful$Textbooks <- as.factor(clean_rawData_helpful$Textbooks)
-
-
-
-# Realize the plot
-l28 <- likert(clean_rawData_helpful) 
-summary(l28) 
-plot(l28)
-
 ```
 
-```{r fig.width=10, fig.height=5}
-
-
+```{r fig.width=10, fig.height=5, fig.align = "center"}
+# helpfull the plot
+helpful_chart <- likert(clean_rawData_helpful) 
+plot(helpful_chart)
+df.v<- summary(helpful_chart) #for references in result
 ```
+**Results** 
+<br>
+<p style="margin-left: 40px">
 
+Analysis on the effectiveness of learning, it clear that **`r df.v[[1,1]]`** is very useful way to learn. It is topping the table with **`r df.v[[1,4]]`** It also suggest that **`r df.v[[2,1]]`**   and  **`r df.v[[2,1]]`**  are also  around **`r df.v[[2,4]]`** percent.  
+</p>
 
-## Result 
-Analysis on
+<hr>
 
+## Technical Skills/tools needed to know as data scienticst 
 
-## Third
-Technical Skills needed
+<p style="margin-left: 40px">
+Here, we are trying to find out the Most valuable Technical skills/ tool which needed to be successful Data Scientist. 
+</p>
+
 ```{r}
-library(car)
+
 Techdata <- clean_rawData %>%
   select(`Amazon Machine Learning`:Tableau)
 
-Techdata
 Techdata<- na.omit(Techdata)
 Techdata
 
-#Techdata[] <- lapply(Techdata, factor)
-#Techdata
-
-
 Techdata[ ,1:18]  <- lapply(Techdata[ ,1:18],
                              FUN = function(x) Recode(x, "'Nice to have' =1 ;'Necessary'=2 ;'Unnecessary' = 0"))
-
 
 Techdata
 
@@ -262,9 +273,14 @@ names(scale)[2] <-"Rank"
 scale <- scale %>%
   arrange(desc(Rank))
 scale
+```
 
+<br>
+<p style="margin-left: 40px">
+Here, we are different approach   to find out the Most valuable Technical skills/ tool. Because we have asked in survey to rank them on the scale like **Necessary, Nice to have** and **Unnecessary**. We are converting that scale into numeric form like **2, 1, and 0** respectively. so we can add them and present the skill on the scale. </p>
+
+```{r fig.align = "center"}
 #plot graph
-
 scale %>%
   mutate(Tech_Skill = fct_reorder(Tech_Skill, Rank)) %>%
   ggplot( aes(x=Tech_Skill, y=Rank)) +
@@ -273,7 +289,56 @@ scale %>%
     coord_flip() + labs(title="Technical Skills Survey")+ 
     theme_minimal()
 ```
+**Result**
+<br>
+<p style="margin-left: 40px">
+From the Above analysis, we concluded that Top 5 Technical skills/tools are most important in the data science field are **`r scale[[1,1]]`**, **`r scale[[2,1]]`**, **`r scale[[3,1]]`**, **`r scale[[4,1]]`** and **`r scale[[5,1]]`**  </p>
 
+<hr>
 
+## Soft Skills/tools needed to know as data scienticst 
 
+```{r}
 
+softdata <- clean_rawData %>%
+  select(`Intellectual curiosity`:`Generating Hypotheses`)
+
+softdata<- na.omit(softdata)
+softdata
+
+temp3 <- names(softdata)
+temp4<- data.frame(matrix(unlist(colSums(softdata)), byrow=T))
+
+scale1 <- cbind(temp3,temp4)
+names(scale1)[1] <-"Soft_skill"
+names(scale1)[2] <-"Total"
+
+scale1 <- scale1 %>%
+  arrange(desc(Total))
+scale1
+
+```
+
+```{r fig.align = "center"}
+#plot graph
+
+scale1 %>%
+  mutate(Soft_skill = fct_reorder(Soft_skill, Total)) %>%
+  ggplot( aes(x=Soft_skill, y=Total)) +
+    geom_segment( aes(xend=Soft_skill, yend=1)) +
+    geom_point( size=2, color="orange") +
+    coord_flip() + labs(title="Soft Skills Survey")+ 
+    theme_minimal()
+```
+**Result**
+
+<br>
+<p style="margin-left: 40px"> From the Above analysis, we concluded that Top 5 Technical skills/tools are most important in the data science field are **`r scale1[[1,1]]`, `r scale1[[2,1]]`, `r scale1[[3,1]]`, `r scale1[[4,1]]` and `r scale1[[5,1]]`**  </p>
+<hr>
+
+# **Conclusion**
+There is so much to learn from this project. I have learned How to conduct survey. Use the data, in your analysis. 
+
+# **Reference** 
+1. Kaggle ML and Data Science Survey, 2017 [LINK]https://www.kaggle.com/kaggle/kaggle-survey-2017
+2. The R-Graph Gallery For likert type Chart [LINK]https://www.r-graph-gallery.com/202-barplot-for-likert-type-items/
