@@ -3,19 +3,13 @@ title: 'Data 607: Project 3'
 author: "VINAYAK PATEL"
 date: "October 19, 2018"
 output:
-  html_document:
+   html_document:
     collapsed: no
-    df_print: paged
     theme: cosmo
     toc: yes
-    toc_depth: 2
     toc_float: no
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
-  word_document:
-    toc: yes
-    toc_depth: '2'
+    toc_depth: 2
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
