@@ -1,0 +1,80 @@
+---
+title: 'Data 607: Week 9 API'
+author: "VINAYAK PATEL"
+date: "October 28, 2018"
+output:
+   html_document:
+    collapsed: no
+    theme: cosmo
+    toc: yes
+    toc_float: no
+    toc_depth: 2
+    df_print: paged
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# **Abstract**
+The New York Times web site provides a rich set of APIs, as described here: http://developer.nytimes.com/docs. My task is to choose one of the New York Times APIs, construct an interface in R to read in the JSON data, and transform it to an R data frame
+
+# **Required Packages**
+```{r, warning=FALSE, message=FALSE}
+if (!require('jsonlite')) install.packages('jsonlite')
+if (!require('dplyr')) install.packages('dplyr')
+if (!require('devtools')) install.packages('devtools')
+if (!require('stringr')) install.packages('stringr')
+
+```
+
+# **Importing**
+
+Let's use the Top Stories V2 API and look for stories section.  
+
+## Key of API
+The Top Stories API returns a list of articles and associated links.API key was requested using signup and received email with API key. 
+
+```{r}
+# received API key by requesting using email
+key <- "a831fcb0f92846d6868c57b9cea31d22"
+
+```
+
+## fetch using API
+
+```{r}
+# add url and text required for call
+url <- "https://api.nytimes.com/svc/topstories/v2/home.json"
+addurl <- paste0(url, "?api-key=")
+
+# fetched using json + key call
+data_fetch <- fromJSON(paste0(addurl, key))
+
+# summary
+summary(data_fetch)
+```
+
+# **Generate Data frame**
+Here, we are interested only on results which is data frame. 
+```{r}
+clean_result <- data_fetch$results
+clean_result
+
+#clean published_date
+clean_result$publish_date <- unlist(str_extract(clean_result$published_date, ".+?(?=T)"))
+clean_result$publish_time <- unlist(str_extract(clean_result$published_date, "(?<=T)(.*)"))
+clean_result$publish_time <- unlist(str_extract(clean_result$publish_time, ".+?(?=-)"))
+
+clean_result <- clean_result %>%
+  select(section, title,byline, abstract,short_url, publish_date, publish_time)%>%
+  arrange(section)
+```
+
+# **Conclusion**
+
+I have generate the TOP Story list of New York Times using API. List has important information like Section, Title, Publish date, Author, and also short_link to go to the article. 
+
+```{r}
+knitr::kable(clean_result)
+```
