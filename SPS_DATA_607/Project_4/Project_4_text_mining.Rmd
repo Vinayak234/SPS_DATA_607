@@ -1,0 +1,187 @@
+---
+title: "Untitled"
+author: "VINAYAK PATEL"
+date: "November 5, 2018"
+output: html_document
+---
+PROJECT 4: Document Classification
+It can be useful to be able to classify new "test" documents using already classified "training" documents. A common example is using a corpus of labeled spam and ham (non-spam) e-mails to predict whether or not a new document is spam.
+
+For this project, you can start with a spam/ham dataset, then predict the class of new documents (either withheld from the training dataset or from another source such as your own spam folder). One example corpus: https://spamassassin.apache.org/publiccorpus/
+
+For more adventurous students, you are welcome (encouraged!) to come up with a different set of documents (including scraped web pages!?) that have already been classified (e.g. tagged), then analyze these documents to predict how new documents should be classified.
+
+In this project, I had downloaded two different sample sets: One classified as spam, and the other classified as ham. Though the tm package is one of the most utilizied packages for text mining, I wanted to take advantage of a different package called tidytext. With this package, my goal is to attempt to find a subset of words that are particular for either spam and ham. With this information, this can help us differentiate what e-mails are spam or not spam.
+
+Load the Appropriate Libraries for the Project
+```{r}
+library(stringr)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(wordcloud)
+```
+Downloading of the Spam and Ham Folders
+In this section, a folder was created (if one did not exist prior) for spam and ham. R had accessed the webpage where the .tar files were held and downloaded them into R for easy access.
+```{r}
+
+ham_files = list.files(path = "easy_ham",full.names = TRUE)
+
+
+spam_files = list.files(path = "spam", full.names = TRUE)
+
+```
+
+Cleaning of the Data
+As we look through several of the spam and ham files, we note that essentially all of the e-mails contained headers. And within these headers were a lot of information that I wanted to exclude out. I wanted to examine the content of the body of the e-mails and utilize that information for my text mining and analysis.
+
+As of note, initially, I did not do this the first time through. Ultimately, the analysis I was seeing was listed below (I will not be showing the code, as much of the code that was done on this initial evaluation was done again with this same data but minus the headers.)
+
+Initial First Time Through Without Eliminating the Headers
+Initial First Time Through Without Eliminating the Headers
+
+As you can see in the above comparison, many of the keywords are not helpful (i.e. sansseriffont, brbr, etc.). As a result, in my second run through analysis, I had opted to leave out the headers and to examine the content of the e-mail instead.
+
+Let's start with spam.
+```{r message=FALSE, warning=FALSE}
+spam.body.df <- data.frame(e.mail = NA)
+
+spam.body <- readLines(spam_files[1])
+for (i in 1:length(spam.body)){
+  if(str_detect(spam.body[i],"[[:alnum:]].*")){
+    spam.body[i] <- ""
+  }else{
+    spam.body <- unlist(str_c(spam.body, collapse = ""))
+    spam.body.df <- rbind(spam.body.df, spam.body)
+    break
+  }
+}
+
+# Omit the NAs
+spam.body.df <- na.omit(spam.body.df)
+spam.body.df
+for (i in 2:length(spam_files)){
+  spam.body <- readLines(spam_files[i])
+  for (j in 1:length(spam.body)){
+    if(str_detect(spam.body[j],"[[:alnum:]].*")){
+      spam.body[j] <- ""
+    }else{
+      spam.body <- unlist(str_c(spam.body, collapse = " "))
+      # Get rid of the HTML tags
+      spam.body <- unlist(gsub("<[[:alnum:]].*>", " ", spam.body))
+      spam.body.df <- rbind(spam.body.df, spam.body)
+      break
+    }
+  }
+}
+```
+# While not perfect, the data has certainly been cleaned up fairly extensively.
+# Now to remove the punctuation, numbers, and excessive spaces.
+```{r}
+x <- gsub("[[:punct:]]|[[:digit:]]", "", spam.body.df$e.mail[1])
+x <- gsub("\\s{2,}", " ", x)
+spam.content.cleaned <- data.frame(NUM = 1, E.Mail=x, stringsAsFactors = FALSE)
+
+for (i in 2:length(spam.body.df$e.mail)) {
+  x <- gsub("[[:punct:]]|[[:digit:]]", "", spam.body.df$e.mail[i])
+  x <- gsub("\\s{2,}", " ", x)
+  y <- data.frame(NUM = i, E.Mail = x)
+  spam.content.cleaned <- rbind(spam.content.cleaned, y)
+}
+
+```
+
+```{r message=FALSE, warning=FALSE}
+data(stop_words)
+spam.content.test <- spam.content.cleaned[1:500,] # Why did I choose 600? For some unusual reason, anything above 600 was crashing RStudio, hence the arbitrary number.
+spam.content.unnested <- spam.content.test %>% unnest_tokens(word, E.Mail) %>% anti_join(stop_words)
+sorted.spam.content <- spam.content.unnested %>% count(word, sort = TRUE)
+#Now that we have done this for spam, we need to repeat the same exact function to ham.
+
+ham.body.df <- data.frame(e.mail = NA)
+
+ham.body <- readLines(ham_files[1])
+for (i in 1:length(ham.body)){
+  if(str_detect(ham.body[i],"[[:alnum:]].*")){
+    ham.body[i] <- ""
+  }else{
+    ham.body <- unlist(str_c(ham.body, collapse = ""))
+    ham.body.df <- rbind(ham.body.df, ham.body)
+    break
+  }
+}
+
+# Omit the NAs
+ham.body.df <- na.omit(ham.body.df)
+
+for (i in 2:length(ham_files)){
+  ham.body <- readLines(ham_files[i])
+  for (j in 1:length(ham.body)){
+    if(str_detect(ham.body[j],"[[:alnum:]].*")){
+      ham.body[j] <- ""
+    }else{
+      ham.body <- unlist(str_c(ham.body, collapse = ""))
+      # Get rid of the HTML tags
+      ham.body <- unlist(gsub("<[[:alnum:]].*>", "", ham.body))
+      ham.body.df <- rbind(ham.body.df, ham.body)
+      break
+    }
+  }
+}
+
+# Now to remove the punctuation, numbers, and excessive spaces.
+
+x <- gsub("[[:punct:]]|[[:digit:]]", "", ham.body.df$e.mail[1])
+x <- gsub("\\s{2,}", " ", x)
+ham.content.cleaned <- data.frame(NUM = 1, E.Mail=x, stringsAsFactors = FALSE)
+
+for (i in 2:length(ham.body.df$e.mail)) {
+  x <- gsub("[[:punct:]]|[[:digit:]]", "", ham.body.df$e.mail[i])
+  x <- gsub("\\s{2,}", " ", x)
+  y <- data.frame(NUM = i, E.Mail = x)
+  ham.content.cleaned <- rbind(ham.content.cleaned, y)
+}
+
+ham.content.test <- ham.content.cleaned[1:600,] # Again, 600 was chosen again because for some unusual reason, any higher number was causing my RStudio to crash. 
+ham.content.unnested <- ham.content.test %>% unnest_tokens(word, E.Mail) %>% anti_join(stop_words)
+sorted.ham.content <- ham.content.unnested %>% count(word, sort = TRUE)
+
+head(sorted.spam.content, 15)
+
+```
+
+```{r}
+head(sorted.ham.content, 15)
+```
+
+We have now successfully created our tidy data frames for text analysis!
+
+Analysis of Spam and Ham
+Now, here comes the fun part: the analysis. In this portion, we'll use the ggplot2 package to plot the most frequent words from spam and ham. For the sake of space, only the words that showed up over 100 times was plotted on the graph. To get a general idea what words were popular in each section, please look at the barplots below.
+
+
+```{r}
+
+
+par(mfrow=c(2,1))
+sorted.spam.content %>%
+  filter(n > 100) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab("Spam") +
+  coord_flip()
+
+sorted.ham.content %>%
+  filter(n > 100) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab("Ham") +
+  coord_flip()
+```
+
+Now as you can see, there are words that are more important in spam and other words that are more important in ham. Looking at the information, it certainly provides some more insight into what words were used more frequently. Words like "sweet, prescription, mastercard, aphrodasic, advertisement, prescription, nigeria" seem to make sense for spam, whereas "technologies, infrastructure, xml" make sense for ham. Interestingly though, this technique wasn't perfect, as words like "promiscuous" seem to have made it into the ham list, and I suspect that this should've probably been in the spam list.
+
+Let's have some fun and take this new information, and plot it on a wordcloud.

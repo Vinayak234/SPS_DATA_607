@@ -1,0 +1,610 @@
+---
+title: "Untitled"
+author: "VINAYAK PATEL"
+date: "November 4, 2018"
+output:
+   html_document:
+    collapsed: no
+    theme: cosmo
+    toc: yes
+    toc_float: no
+    toc_depth: 2
+    df_print: paged
+---
+
+# Assignment: Document Classification
+
+It can be useful to be able to classify new "test" documents using already classified "training" documents.  A common example is using a corpus of labeled spam and ham (non-spam) e-mails to predict whether or not a new document is spam.  
+
+For this project, you can start with a spam/ham dataset, then predict the class of new documents (either withheld from the training dataset or from another source such as your own spam folder).   One example corpus:  https://spamassassin.apache.org/publiccorpus/
+
+For more adventurous students, you are welcome (encouraged!) to come up with a different set of documents (including scraped web pages!?) that have already been classified (e.g. tagged), then analyze these documents to predict how new documents should be classified.
+
+* Read in the Data
+* Count occurrences of each word (Train)
+* Classify each Test Mail (Test)
+* Print Results
+
+# **Required Packages**
+```{r, warning=FALSE, message=FALSE}
+if (!require('tm')) install.packages('tm')
+if (!require('stopwords')) install.packages('stopwords')
+if (!require('plyr')) install.packages('plyr')
+if (!require('knitr')) install.packages('knitr')
+if (!require('wordcloud')) install.packages('wordcloud')
+if (!require('SnowballC')) install.packages('SnowballC')
+library("RColorBrewer")
+library(e1071)
+library(dplyr)
+library('ISOcodes')
+```
+
+
+### Imports:
+
+### Function to Load Corpus:
+
+```{r message=FALSE, warning=FALSE}
+# My computer crashes when I go higher than MAX_FILES...
+MAX_FILES <- 40
+# How many table rows to show for knitr tables
+NUM_TABLE_ROWS <- 10
+# how many terms to return on analysis
+TOP_X_TERMS <- 999
+# get the corpus given the directory
+get_corpus <- function(the_dir){
+  file_contents <- c()
+  the_files <- list.files(path=the_dir, full.names = TRUE)
+  head(the_files)
+  i <- 0
+  for (cur_file in the_files){
+    if(i < MAX_FILES){
+      current_content <- readLines(cur_file)
+      file_contents <- c(file_contents, current_content)
+      i <- (i+1)
+    }
+  }
+  the_corpus <- Corpus(VectorSource(file_contents))
+  return (the_corpus)
+}
+```
+
+### Create the SPAM/HAM Corpuses:
+
+```{r message=FALSE, warning=FALSE}
+# Get the Ham and Spam Corpuses:
+ham_corpus <- get_corpus("easy_ham/")
+length(ham_corpus)
+ham_corpus
+spam_corpus <- get_corpus("spam/")
+length(spam_corpus)
+spam_corpus
+
+
+
+
+cleanfunction<- function(corpus) {
+  toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+  tmp <- tm_map(corpus, toSpace, "\\n")
+  tmp <- tm_map(tmp, toSpace, "<.*?>")
+  tmp <- tm_map(tmp, toSpace, "^.*Subject: ")
+  tmp <- tm_map(tmp, content_transformer(tolower))
+  tmp <- tm_map(tmp, content_transformer(removePunctuation)) 
+  tmp <- tm_map(tmp, content_transformer(removeNumbers))
+  tmp <- tm_map(tmp,  removeWords, c(stopwords("english")))
+  tmp <- tm_map(tmp, content_transformer(stemDocument))  
+  tmp <- tm_map(tmp, content_transformer(stripWhitespace))
+}
+
+ham_corpus<-cleanfunction(ham_corpus)
+
+
+spam_corpus<-cleanfunction(spam_corpus)
+
+```
+
+### Filter the 2 Corpuses, and create Term Document Matrices:
+
+```{r message=FALSE, warning=FALSE}
+# general filtering opts:
+tdm_dtm_opts <- list(removePunctuation=TRUE, removeNumbers=TRUE, stripWhitespace=TRUE, tolower=TRUE, stopwords=TRUE, minWordLength = 2)
+
+tdm_dtm_opts
+# create the TDMs
+spam_tdm <- TermDocumentMatrix(spam_corpus,control=tdm_dtm_opts)
+spam_tdm
+ham_tdm <- TermDocumentMatrix(ham_corpus,control=tdm_dtm_opts)
+ham_tdm
+spam_corpus
+```
+
+### Create Spam and Ham Data Frames:
+
+```{r message=FALSE, warning=FALSE}
+spam_df <- as.data.frame(as.table(spam_tdm))
+spam_df$spam_ham <- "SPAM"
+colnames(spam_df) <- c('TERM', 'SPAM_DOCS', 'SPAM_FREQ', 'TYPE_SPAM')
+spam_df <- subset(spam_df, select = -c(2) )
+spam_df$SPAM_FREQ[is.na(spam_df$SPAM_FREQ)] <- '0'
+spam_df <- ddply(spam_df, .(TERM, TYPE_SPAM), summarize, SPAM_FREQ = sum(as.numeric(SPAM_FREQ)))
+kable(head(spam_df, n = NUM_TABLE_ROWS))
+spam_count <- nrow(spam_df)
+ham_df <- as.data.frame(as.table(ham_tdm))
+ham_df$spam_ham <- "HAM"
+colnames(ham_df) <- c('TERM', 'HAM_DOCS', 'HAM_FREQ', 'TYPE_HAM')
+ham_df <- subset(ham_df, select = -c(2) )
+ham_df$HAM_FREQ[is.na(ham_df$HAM_FREQ)] <- '0'
+ham_df <- ddply(ham_df, .(TERM, TYPE_HAM), summarize, HAM_FREQ = sum(as.numeric(HAM_FREQ)))
+kable(head(ham_df, n = NUM_TABLE_ROWS))
+ham_count <- nrow(ham_df)
+```
+
+### Merge the Spam and Ham Data Frames:
+
+```{r message=FALSE, warning=FALSE}
+# now hopefully merge them with no memory issues..
+all_df <- merge(x = ham_df, y = spam_df, by="TERM", all = TRUE)
+# since this is like an outer join, fill the nulls with Zeros...
+all_df$SPAM_FREQ[is.na(all_df$SPAM_FREQ)] <- '0'
+all_df$TYPE_SPAM[is.na(all_df$TYPE_SPAM)] <- 'SPAM'
+all_df$HAM_FREQ[is.na(all_df$HAM_FREQ)] <- '0'
+all_df$TYPE_HAM[is.na(all_df$TYPE_HAM)] <- 'HAM'
+all_df[is.na(all_df)] <- '0'
+```  
+
+### Take a look at the SpamHam DataFrame sorted by HAM_FREQ desc, then SPAM_FREQ desc
+
+```{r message=FALSE, warning=FALSE}
+all_df$SPAM_WEIGHT <- as.numeric(all_df$SPAM_FREQ) - as.numeric(all_df$HAM_FREQ)
+kable(head(all_df[order(-as.numeric(all_df$HAM_FREQ)), ], n=NUM_TABLE_ROWS))
+kable(head(all_df[order(-as.numeric(all_df$SPAM_FREQ)), ], n=NUM_TABLE_ROWS))
+```  
+
+### HAM CLOUD
+
+```{r message=FALSE, warning=FALSE}
+wordcloud(ham_corpus, max.words = 200, random.order = FALSE, colors=c('green'))
+```
+
+### SPAM CLOUD
+
+```{r message=FALSE, warning=FALSE}
+wordcloud(spam_corpus, max.words = 200, random.order = FALSE, colors=c('red'))
+```
+
+### Function to calculate the spam score (positive means more likely to be spam...):
+
+```{r message=FALSE, warning=FALSE}
+get_spam_score <- function(file_path){
+  content <- readLines(file_path)
+  one_string <- paste(content, collapse = ' ')
+  word_list <- strsplit(one_string, "\\W+")
+  dfx <- as.data.frame(word_list)
+  colnames(dfx) <- c("WORD")
+  dfx$WORD <- tolower(dfx$WORD)
+  
+  total_score <- sum(all_df$SPAM_WEIGHT[dfx$WORD == all_df$TERM])
+  # Thought this should have given a sum of the SPAM_WEIGHT...some pos, some neg...but not sure why some NAs come back and the rest are 0s and 1s...
+  print(total_score)
+}
+```
+
+### Test with some HAM:
+
+```{r message=FALSE, warning=FALSE}
+get_spam_score("easy_ham/01451.b5a50ca35f50e38d37a2eba47399f57d")
+get_spam_score("easy_ham/00677.b957e34b4dd0d9263b56bf71b1168d8a")
+get_spam_score("easy_ham/00765.ea01c46568902b1338c9685b55d77f6c")
+get_spam_score("easy_ham/01554.0aed12846b3981a2a13adf793083e4f0")
+get_spam_score("easy_ham/00831.dfa70bbdaef79d5863917ba90097ba7a")
+```
+
+### Test with some SPAM:
+
+```{r message=FALSE, warning=FALSE}
+get_spam_score("spam/00014.7d38c46424f24fc8012ac15a95a2ac14")
+get_spam_score("spam/00055.58adfd0c60ebc04370658a76b9352aa1")
+get_spam_score("spam/00062.3019eac14dfe3c503c03e25e70e63091")
+get_spam_score("spam/00063.2334fb4e465fc61e8406c75918ff72ed")
+get_spam_score("spam/00293.f4e9fd5549f9063ad5559c094edf08f2")
+
+
+
+
+
+
+```
+
+```{r message=FALSE, warning=FALSE}
+# Get the Ham and Spam Corpuses:
+ham_corpus <- get_corpus("Project_4/easy_ham/")
+length(ham_corpus)
+head(ham_corpus, n=10)
+inspect(ham_corpus[1:10])
+spam_corpus <- get_corpus("Project_4/spam/")
+length(spam_corpus)
+head(spam_corpus, n=10)
+inspect(spam_corpus[1:10])
+# general filtering opts:
+tdm_dtm_opts <- list(removePunctuation=TRUE, removeNumbers=TRUE, stripWhitespace=TRUE, tolower=TRUE)
+# create the TDMs
+spam_tdm <- TermDocumentMatrix(spam_corpus,control=tdm_dtm_opts)
+spam_tdm
+ham_tdm <- TermDocumentMatrix(ham_corpus,control=tdm_dtm_opts)
+ham_tdm
+# check out the frequent terms:
+spam_freq_terms <- findFreqTerms(spam_tdm, TOP_X_TERMS)
+spam_freq_terms
+ham_freq_terms <- findFreqTerms(ham_tdm, TOP_X_TERMS)
+ham_freq_terms
+# Create Spam and Ham Data Frames
+spam_df <- as.data.frame(as.table(spam_tdm))
+spam_df$spam_ham <- "SPAM"
+kable(head(spam_df, n = 20))
+ham_df <- as.data.frame(as.table(ham_tdm))
+ham_df$spam_ham <- "HAM"
+kable(head(ham_df, n = 20))
+all_df <- rbind(ham_df, spam_df)
+head(all_df, n=20)
+# model time:
+```  
+  
+
+
+
+```
+
+
+
+
+
+
+FINAL NICHE WALU
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+
+
+ham_path<- "C:/Users/patel/Desktop/SPS/SPS_DATA_607/Project_4/easy_ham"
+filelist<- paste(ham_path,"/", list.files(path=ham_path),sep="")
+
+a<-lapply(filelist, FUN=readLines)
+b<-lapply(a, FUN = paste,collapse=" ")
+
+#clean
+
+#CleanCorpus 
+cleanfunction<- function(corpus) {
+  toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+  tmp <- tm_map(corpus, toSpace, "\\n")
+  tmp <- tm_map(tmp, toSpace, "<.*?>")
+  tmp <- tm_map(tmp, toSpace, "^.*Subject: ")
+  tmp <- tm_map(tmp, content_transformer(tolower))
+  tmp <- tm_map(tmp, content_transformer(removePunctuation)) 
+  tmp <- tm_map(tmp, content_transformer(removeNumbers))
+  tmp <- tm_map(tmp,  removeWords, c(stopwords("english")))
+  tmp <- tm_map(tmp, content_transformer(stemDocument))  
+  tmp <- tm_map(tmp, content_transformer(stripWhitespace))
+}
+head(b) 
+
+clean.spam <- cleanfunction(a)
+head(b)
+v<- as.character(clean.spam[[1]]) 
+
+
+
+
+ham_tdm <- Corpus(ham_corpus, readerControl=list(reader=PlainTextDocument))
+ham_tdm
+
+
+
+
+
+
+files <- as.character(list.files(path=ham_path))
+ham<- readLines(paste(ham_path,.Platform$file.sep,files[1],sep=""))
+ham
+
+spam_path <- "C:/Users/patel/Desktop/SPS/SPS_DATA_607/Project_4/spam"
+files <- as.character(list.files(path=spam_path))
+spam<- readLines(paste(spam_path,.Platform$file.sep,files[1],sep=""))
+
+
+
+
+
+
+
+# create the TDMs
+
+
+```
+
+### Create Spam and Ham Data Frames:
+
+```{r message=FALSE, warning=FALSE}
+CleanCorpus <- function(corpus) {
+  toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+  tmp <- tm_map(corpus, toSpace, "\\n")
+  tmp <- tm_map(tmp, toSpace, "<.*?>")
+  tmp <- tm_map(tmp, toSpace, "^.*Subject: ")
+  tmp <- tm_map(tmp, content_transformer(tolower))
+  tmp <- tm_map(tmp, content_transformer(removePunctuation)) 
+  tmp <- tm_map(tmp, content_transformer(removeNumbers))
+  tmp <- tm_map(tmp,  removeWords, c(stopwords("english")))
+  tmp <- tm_map(tmp, content_transformer(stemDocument))  
+  tmp <- tm_map(tmp, content_transformer(stripWhitespace))
+}
+
+clean.spam <- CleanCorpus(spam_tdm)
+as.character(clean.spam[[1]])
+
+clean.spam
+
+clean.ham <- CleanCorpus(ham_tdm)
+inspect(clean.ham[[1]])
+
+clean.ham
+
+
+
+```
+
+
+```{r}
+cleanfunction  <- function(test) {
+
+    ## You can use tm_map but I am keeping gsub function
+    test<- gsub(pattern ="http[^[:space:]]*", replace =" ",test)
+    test <-gsub("\\W"," ",test)
+    test <-gsub("\\d"," ",test)
+    test <- gsub(pattern ="\\b[A-z]\\b{1}", replace =" ",test)
+
+    # You need to convert your vector to corpus  
+    myCorpus <- Corpus(VectorSource(test))
+
+    ## You can add any words that you would like to exclude in myStopwords. 
+    ## stopwords("english") have some default word list that it would exclude from corpus but not all common words. So, myStopwords will help you to remove certain words that you wish to remove
+
+    myStopwords <- c("got", "just", "this", "the")
+    myCorpus <- tm_map(myCorpus, removeWords, c(myStopwords, stopwords("english"))) 
+
+    ## Stripping extra white space    
+    test <- tm_map(myCorpus, stripWhitespace)
+
+return (test)
+
+}
+
+
+
+
+temp<- gsub(pattern ="http[^[:space:]]*", replace =" ",b)
+temp <- gsub(pattern ="\\W", replace =" ",temp)
+temp <- gsub(pattern ="\\d", replace =" ",temp)
+temp<- removeWords(temp, stopwords("english"))
+temp <- gsub(pattern ="\\b[A-z]\\{1}", replace =" ",temp)
+head(temp)
+
+
+
+
+
+
+
+
+
+
+
+filePath <- "/Project_4/easy_ham"
+text <- readLines(filePath)
+
+# load the data as a corpus
+C.mlk <- Corpus(VectorSource(text))
+C.mlk
+V.mlk <- VCorpus(VectorSource(text))
+V.mlk
+
+
+
+ham_corpus <- DirSource("C:/Users/patel/Desktop/SPS/SPS_DATA_607/Project_4/easy_ham")
+length(ham_corpus)
+#ham_corpus
+
+spam_corpus <- DirSource("C:/Users/patel/Desktop/SPS/SPS_DATA_607/Project_4/spam")
+length(spam_corpus)
+#spam_corpus
+```
+
+
+```{r message=FALSE, warning=FALSE}
+
+```
+
+### Function to Load Corpus:
+
+```{r message=FALSE, warning=FALSE}
+# My computer crashes when I go higher than MAX_FILES...
+MAX_FILES <- 40
+# How many table rows to show for knitr tables
+NUM_TABLE_ROWS <- 10
+# how many terms to return on analysis
+TOP_X_TERMS <- 999
+
+# get the corpus given the directory
+get_corpus <- function(the_dir){
+  file_contents <- c()
+  the_files <- list.files(path=the_dir, full.names = TRUE)
+  head(the_files)
+  i <- 0
+  for (cur_file in the_files){
+    if(i < MAX_FILES){
+      current_content <- readLines(cur_file)
+      file_contents <- c(file_contents, current_content)
+      i <- (i+1)
+    }
+  }
+  the_corpus <- Corpus(VectorSource(file_contents))
+  return (the_corpus)
+}
+
+
+```
+
+### Create the SPAM/HAM Corpuses:
+
+
+### Filter the 2 Corpuses, and create Term Document Matrices:
+
+```{r message=FALSE, warning=FALSE}
+# general filtering opts:
+tdm_dtm_opts <- list(removePunctuation=TRUE, removeNumbers=TRUE, stripWhitespace=TRUE, tolower=TRUE, stopwords=TRUE, minWordLength = 2)
+
+# create the TDMs
+spam_tdm <- Corpus(spam_corpus, readerControl=list(reader=PlainTextDocument))
+spam_tdm
+
+ham_tdm <- Corpus(ham_corpus, readerControl=list(reader=PlainTextDocument))
+ham_tdm
+
+```
+
+### Create Spam and Ham Data Frames:
+
+```{r message=FALSE, warning=FALSE}
+CleanCorpus <- function(corpus) {
+  toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+  tmp <- tm_map(corpus, toSpace, "\\n")
+  tmp <- tm_map(tmp, toSpace, "<.*?>")
+  tmp <- tm_map(tmp, toSpace, "^.*Subject: ")
+  tmp <- tm_map(tmp, content_transformer(tolower))
+  tmp <- tm_map(tmp, content_transformer(removePunctuation)) 
+  tmp <- tm_map(tmp, content_transformer(removeNumbers))
+  tmp <- tm_map(tmp,  removeWords, c(stopwords("english")))
+  tmp <- tm_map(tmp, content_transformer(stemDocument))  
+  tmp <- tm_map(tmp, content_transformer(stripWhitespace))
+}
+
+clean.spam <- CleanCorpus(spam_tdm)
+as.character(clean.spam[[1]])
+
+clean.spam
+
+clean.ham <- CleanCorpus(ham_tdm)
+inspect(clean.ham[[1]])
+
+clean.ham
+
+CustomRemoveSparse <- function(x) {
+  x <- TermDocumentMatrix(x, control = list(bounds = list(global)))
+}
+
+
+
+MostFreq <- function(y,num){
+  m <- as.matrix(y, rownames = FALSE)
+  v <- sort(rowSums(m),decreasing=TRUE)
+  d <- data.frame(word = names(v),freq=v)
+  d <- subset(d, freq > num)
+}
+
+freq.spam <- MostFreq(clean.spam, 500)
+head(freq.spam)
+
+barplot(freq.spam$freq, border = NA, names.arg = freq.spam$word, las = 2, ylim = c(0,max(freq.spam$freq)))
+
+freq.ham <- MostFreq(tdm.ham, 600)
+head(freq.ham)
+
+barplot(freq.ham$freq, border = NA, names.arg = freq.ham$word, las = 2, ylim = c(0,max(freq.ham$freq)))
+
+```
+
+### Merge the Spam and Ham Data Frames:
+
+```{r message=FALSE, warning=FALSE}
+# now hopefully merge them with no memory issues..
+all_df <- merge(x = ham_df, y = spam_df, by="TERM", all = TRUE)
+# since this is like an outer join, fill the nulls with Zeros...
+all_df$SPAM_FREQ[is.na(all_df$SPAM_FREQ)] <- '0'
+all_df$TYPE_SPAM[is.na(all_df$TYPE_SPAM)] <- 'SPAM'
+all_df$HAM_FREQ[is.na(all_df$HAM_FREQ)] <- '0'
+all_df$TYPE_HAM[is.na(all_df$TYPE_HAM)] <- 'HAM'
+all_df[is.na(all_df)] <- '0'
+```  
+
+### Take a look at the SpamHam DataFrame sorted by HAM_FREQ desc, then SPAM_FREQ desc
+
+```{r message=FALSE, warning=FALSE}
+all_df$SPAM_WEIGHT <- as.numeric(all_df$SPAM_FREQ) - as.numeric(all_df$HAM_FREQ)
+kable(head(all_df[order(-as.numeric(all_df$HAM_FREQ)), ], n=NUM_TABLE_ROWS))
+kable(head(all_df[order(-as.numeric(all_df$SPAM_FREQ)), ], n=NUM_TABLE_ROWS))
+```  
+
+### HAM CLOUD
+
+```{r message=FALSE, warning=FALSE}
+wordcloud(ham_corpus, max.words = 200, random.order = FALSE, colors=c('green'))
+```
+
+### SPAM CLOUD
+
+```{r message=FALSE, warning=FALSE}
+wordcloud(spam_corpus, max.words = 200, random.order = FALSE, colors=c('red'))
+```
+
+### Function to calculate the spam score (positive means more likely to be spam...):
+
+```{r message=FALSE, warning=FALSE}
+get_spam_score <- function(file_path){
+  content <- readLines(file_path)
+  one_string <- paste(content, collapse = ' ')
+  word_list <- strsplit(one_string, "\\W+")
+  dfx <- as.data.frame(word_list)
+  colnames(dfx) <- c("WORD")
+  dfx$WORD <- tolower(dfx$WORD)
+  
+  total_score <- sum(all_df$SPAM_WEIGHT[dfx$WORD == all_df$TERM])
+  # Thought this should have given a sum of the SPAM_WEIGHT...some pos, some neg...but not sure why some NAs come back and the rest are 0s and 1s...
+  print(total_score)
+}
+```
+
+### Test with some HAM:
+
+```{r message=FALSE, warning=FALSE}
+
+get_spam_score("Project_4/easy_ham/01451.b5a50ca35f50e38d37a2eba47399f57d")
+get_spam_score("Project_4/easy_ham/00677.b957e34b4dd0d9263b56bf71b1168d8a")
+get_spam_score("Project_4/easy_ham/00765.ea01c46568902b1338c9685b55d77f6c")
+get_spam_score("Project_4/easy_ham/01554.0aed12846b3981a2a13adf793083e4f0")
+get_spam_score("Project_4/easy_ham/00831.dfa70bbdaef79d5863917ba90097ba7a")
+
+```
+
+### Test with some SPAM:
+
+```{r message=FALSE, warning=FALSE}
+get_spam_score("Project_4/spam/00028.60393e49c90f750226bee6381eb3e69d")
+get_spam_score("Project_4/spam/00077.6e13224e39fae4b94bcbe0f5ae9f4939")
+get_spam_score("Project_4/spam/00081.4c7fbdca38b8def54e276e75ec56682e")
+get_spam_score("Project_4/spam/01326.32e7912cae22a40e7b27f7d020de08fe")
+get_spam_score("Project_4/spam/01188.67d69a8d6e5c899914556488c8cbd2c9")
+
+```
