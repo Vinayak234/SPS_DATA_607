@@ -9,38 +9,33 @@ It can be useful to be able to classify new "test" documents using already class
 
 For this project, you can start with a spam/ham dataset, then predict the class of new documents (either withheld from the training dataset or from another source such as your own spam folder). One example corpus: https://spamassassin.apache.org/publiccorpus/
 
-For more adventurous students, you are welcome (encouraged!) to come up with a different set of documents (including scraped web pages!?) that have already been classified (e.g. tagged), then analyze these documents to predict how new documents should be classified.
-
-In this project, I had downloaded two different sample sets: One classified as spam, and the other classified as ham. Though the tm package is one of the most utilizied packages for text mining, I wanted to take advantage of a different package called tidytext. With this package, my goal is to attempt to find a subset of words that are particular for either spam and ham. With this information, this can help us differentiate what e-mails are spam or not spam.
-
-Load the Appropriate Libraries for the Project
-```{r}
-library(stringr)
-library(tidytext)
+# **Required Packages**
+```{r, warning=FALSE, message=FALSE}
+if (!require('tm')) install.packages('tm')
+if (!require('stopwords')) install.packages('stopwords')
+if (!require('plyr')) install.packages('plyr')
+if (!require(RTextTools)) install.packages('RTextTools')
+if (!require('wordcloud')) install.packages('wordcloud')
+if (!require('SnowballC')) install.packages('SnowballC')
+library("RColorBrewer")
+library(e1071)
 library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(wordcloud)
+library('ISOcodes')
 ```
+
 Downloading of the Spam and Ham Folders
 In this section, a folder was created (if one did not exist prior) for spam and ham. R had accessed the webpage where the .tar files were held and downloaded them into R for easy access.
 ```{r}
 
 ham_files = list.files(path = "easy_ham",full.names = TRUE)
-
-
+head(ham_files)
 spam_files = list.files(path = "spam", full.names = TRUE)
+
 
 ```
 
+
 Cleaning of the Data
-As we look through several of the spam and ham files, we note that essentially all of the e-mails contained headers. And within these headers were a lot of information that I wanted to exclude out. I wanted to examine the content of the body of the e-mails and utilize that information for my text mining and analysis.
-
-As of note, initially, I did not do this the first time through. Ultimately, the analysis I was seeing was listed below (I will not be showing the code, as much of the code that was done on this initial evaluation was done again with this same data but minus the headers.)
-
-Initial First Time Through Without Eliminating the Headers
-Initial First Time Through Without Eliminating the Headers
-
 As you can see in the above comparison, many of the keywords are not helpful (i.e. sansseriffont, brbr, etc.). As a result, in my second run through analysis, I had opted to leave out the headers and to examine the content of the e-mail instead.
 
 Let's start with spam.
