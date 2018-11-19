@@ -1,0 +1,240 @@
+---
+title: "Data 607 Final Project"
+author: "VINAYAK PATEL"
+date: "November 18, 2018"
+output:
+   html_document:
+    collapsed: no
+    theme: cosmo
+    toc: yes
+    toc_float: no
+    toc_depth: 2
+    df_print: paged
+---
+
+# **Required Packages**
+```{r, warning=FALSE, message=FALSE}
+if (!require('ggplot2')) install.packages('ggplot2')
+if (!require('gridExtra')) install.packages('gridExtra')
+if (!require('dplyr')) install.packages('dplyr')
+if (!require('leaflet')) install.packages('leaflet')
+if (!require('wordcloud')) install.packages('wordcloud')
+if (!require('readr')) install.packages('readr')
+if (!require('dplyr')) install.packages('dplyr')
+if (!require('ggmap')) install.packages('ggmap')
+if (!require('RgoogleMaps')) install.packages('RgoogleMaps')
+if (!require('tigris')) install.packages('tigris')
+
+
+library(ggmap)
+library(maptools)
+library(broom)
+library(httr)
+library(rgdal)
+
+```
+
+# **Importing data**
+```{r message=FALSE, warning=FALSE}
+# Import data
+NYcrime <- read.csv("NYPD_Complaint_Data_2017.csv", header=TRUE, stringsAsFactors = FALSE, na.strings = c("", "NA"))
+head(NYcrime)
+
+```
+
+#cleaning data
+
+```{r}
+NYcrime <- NYcrime %>%
+  filter(!is.na(BORO_NM))
+
+
+borobp <- ggplot(NYcrime, aes(x = BORO_NM, fill=as.factor(BORO_NM))) + 
+                geom_bar(width=0.9, stat="count") + 
+                theme(legend.position="none") + 
+                coord_flip()
+borobp 
+NYcrime
+
+boro.totals <- data.frame(table(NYcrime$BORO_NM))
+
+names(boro.totals)[1] <- "Borough"
+
+boro.totals
+
+# NYC.gov has 2017 estimates at: 1471160, 2648771, 1664727, 2358582, and 479458 for BX, BK, MH, QN, and SI respectively.
+
+boropops <- c(1471160, 2648771, 1664727, 2358582, 479458)
+
+boro.totals[,"Freq"] <- ((boro.totals[,"Freq"]/boropops)*100)
+
+scaled.boro.bp <- ggplot(boro.totals, aes(x= Borough, y = Freq, fill = as.factor(boro.totals$Borough))) +
+                geom_bar(width=0.9, stat="identity") + 
+                ggtitle("Crime Records per Capita by Borough") + 
+                theme(legend.position="none") + 
+                coord_flip()
+scaled.boro.bp
+
+```
+```{r}
+
+frequencies <- data.frame(table(NYcrime$OFNS_DESC))
+
+names(frequencies)[1] <- "Crime"
+
+frequencies <- frequencies[order(-frequencies$Freq),]
+
+top10<- head(frequencies, n=10)
+top10
+
+frequencies$OrderedCrime <- reorder(frequencies$Crime, frequencies$Freq)
+ofns.freqbp <- ggplot(frequencies, aes(x=OrderedCrime, y=Freq, fill=Freq)) +
+
+  geom_bar(width=1, stat="identity") + ggtitle("OFNS.DESC Tags by Frequency") +
+
+  coord_flip()
+
+ofns.freqbp
+
+
+
+```
+
+```{r}
+NYcrime$OFNS_DESC <- as.factor(NYcrime$OFNS_DESC)
+  
+NYcrime_map <- NYcrime %>%
+  select(CMPLNT_NUM,BORO_NM,CMPLNT_FR_DT,LAW_CAT_CD,OFNS_DESC,VIC_RACE, VIC_SEX, Latitude,Longitude)%>%
+  filter(OFNS_DESC=="GRAND LARCENY" | OFNS_DESC=="PETIT LARCENY" | OFNS_DESC=="HARRASSMENT 2"	| OFNS_DESC=="CRIMINAL MISCHIEF & RELATED OF" | OFNS_DESC=="OFF. AGNST PUB ORD SENSBLTY &" | OFNS_DESC== "THEFT-FRAUDS" | OFNS_DESC=="SEX CRIMES" | OFNS_DESC== "ASSAULT 3 & RELATED OFFENSES" | OFNS_DESC=="MISCELLANEOUS PENAL LAW" | OFNS_DESC== "FRAUDS")
+NYcrime_map
+
+Queens_map<- NYcrime_map%>%
+  filter(BORO_NM == "QUEENS")%>% 
+  group_by(OFNS_DESC)
+Queens_map
+
+
+```
+
+```{r fig.align = "center", fig.width=10, fig.height=10}
+library("ggmap")
+
+nyc <- c(left = -74.39, bottom = 40.4825, right = -73.49, top = 41.13)
+map <- get_stamenmap(nyc, maptype = "toner-lite")
+v<- ggmap(map)+
+     geom_point(data=NYcrime_map, aes(x=Longitude, y=Latitude, color=factor(NYcrime_map$OFNS_DESC)), alpha=0.05) +
+     guides(colour = guide_legend(override.aes = list(alpha=1.0, size=1.0),
+                                  title="Type of Crime")) +
+     scale_colour_brewer(type="qual",palette="Paired") + 
+     ggtitle("Top Crimes in NYC") +
+     theme_light(base_size=10) +
+     theme(axis.line=element_blank(),
+           axis.text.x=element_blank(),
+           axis.text.y=element_blank(),
+           axis.ticks=element_blank(),
+           axis.title.x=element_blank(),
+           axis.title.y=element_blank())
+ggsave("NYC_top_crimes_map.png", v, width=14, height=10, units="in")
+
+v
+```
+```{r fig.align = "center", fig.width=10, fig.height=7}
+#queens 
+Queen <- c(left = -74.1, bottom = 40.46, right = -73.60, top = 40.84)
+map <- get_stamenmap(Queen, maptype = "toner-lite")
+Queen_map<- ggmap(map)+
+     geom_point(data=Queens_map, aes(x=Longitude, y=Latitude, color=factor(Queens_map$OFNS_DESC)), alpha=1) +
+     guides(colour = guide_legend(override.aes = list(alpha=1, size=5),
+                                  title="Type of Crime")) +
+     scale_colour_brewer(type="qual",palette="Paired") + 
+     ggtitle("Top Crimes in Queens") +
+     theme_light(base_size=15) +
+     theme(axis.line=element_blank(),
+           axis.text.x=element_blank(),
+           axis.text.y=element_blank(),
+           axis.ticks=element_blank(),
+           axis.title.x=element_blank(),
+           axis.title.y=element_blank())
+Queen_map
+
+#toner-lite
+```
+
+
+```{r fig.align = "center", fig.width=10, fig.height=7}
+Brooklyn_data<- NYcrime_map%>%
+  filter(BORO_NM == "BROOKLYN")%>% 
+  group_by(OFNS_DESC)
+Brooklyn_data
+
+BROOKLYN <- c(left = -74.04, bottom = 40.56, right = -73.85, top = 40.742)
+map <- get_stamenmap(BROOKLYN, maptype = "toner-lite")
+
+BROOKLYN_Map<- ggmap(map)+
+     geom_point(data=Brooklyn_data, aes(x=Longitude, y=Latitude, color=factor(Brooklyn_data$OFNS_DESC)), alpha=1.0) +
+     guides(colour = guide_legend(override.aes = list(alpha=1, size=5),
+                                  title="Type of Crime")) +
+     scale_colour_brewer(type="qual",palette="Paired") + 
+     ggtitle("Top Crimes in Brooklyn") +
+     theme_light(base_size=10) +
+     theme(axis.line=element_blank(),
+           axis.text.x=element_blank(),
+           axis.text.y=element_blank(),
+           axis.ticks=element_blank(),
+           axis.title.x=element_blank(),
+           axis.title.y=element_blank())
+BROOKLYN_Map
+
+```
+
+
+```{r fig.align = "center", fig.width=10, fig.height=7}
+Bronx_data<- NYcrime_map%>%
+  filter(BORO_NM == "BRONX")%>% 
+  group_by(OFNS_DESC)
+Bronx_data
+
+BRONX <- c(left = -73.96, bottom = 40.74, right = -73.69, top = 40.95)
+map <- get_stamenmap(BRONX, maptype = "toner-lite")
+
+Bronx_Map<- ggmap(map)+
+     geom_point(data=Bronx_data, aes(x=Longitude, y=Latitude, color=factor(Bronx_data$OFNS_DESC)), alpha=1.0) +
+     guides(colour = guide_legend(override.aes = list(alpha=1, size=5),
+                                  title="Type of Crime")) +
+     scale_colour_brewer(type="qual",palette="Paired") + 
+     ggtitle("Top Crimes in Brooklyn") +
+     theme_light(base_size=10) +
+     theme(axis.line=element_blank(),
+           axis.text.x=element_blank(),
+           axis.text.y=element_blank(),
+           axis.ticks=element_blank(),
+           axis.title.x=element_blank(),
+           axis.title.y=element_blank())
+Bronx_Map
+```
+
+```{r fig.align = "center", fig.width=10, fig.height=7}
+MANHATTAN_data<- NYcrime_map%>%
+  filter(BORO_NM == "MANHATTAN")%>% 
+  group_by(OFNS_DESC)
+MANHATTAN_data
+
+MANHATTAN <- c(left = -74.09, bottom = 40.69, right = -73.83, top = 40.89)
+map <- get_stamenmap(MANHATTAN, maptype = "toner-lite")
+
+MANHATTAN_Map<- ggmap(map)+
+     geom_point(data=MANHATTAN_data, aes(x=Longitude, y=Latitude, color=factor(MANHATTAN_data$OFNS_DESC)), alpha=1.0) +
+     guides(colour = guide_legend(override.aes = list(alpha=1, size=5),
+                                  title="Type of Crime")) +
+     scale_colour_brewer(type="qual",palette="Paired") + 
+     ggtitle("Top Crimes in Brooklyn") +
+     theme_light(base_size=10) +
+     theme(axis.line=element_blank(),
+           axis.text.x=element_blank(),
+           axis.text.y=element_blank(),
+           axis.ticks=element_blank(),
+           axis.title.x=element_blank(),
+           axis.title.y=element_blank())
+MANHATTAN_Map
+```
+
