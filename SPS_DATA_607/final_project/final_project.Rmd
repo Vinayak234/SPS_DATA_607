@@ -11,35 +11,343 @@ output:
     toc_depth: 2
     df_print: paged
 ---
+#**Abstract**#
+The current project is aimed to explore the crime rate in the current year. The dataset used in this project is found in this link which is provided by New York Police Department
 
-# **Required Packages**
+
+# **Required Packages/libraries**
 ```{r, warning=FALSE, message=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2')
 if (!require('gridExtra')) install.packages('gridExtra')
 if (!require('dplyr')) install.packages('dplyr')
 if (!require('leaflet')) install.packages('leaflet')
-if (!require('wordcloud')) install.packages('wordcloud')
+if (!require('scales')) install.packages('scales')
 if (!require('readr')) install.packages('readr')
 if (!require('dplyr')) install.packages('dplyr')
 if (!require('ggmap')) install.packages('ggmap')
 if (!require('RgoogleMaps')) install.packages('RgoogleMaps')
 if (!require('tigris')) install.packages('tigris')
-
+if(!require('leaflet')) install.packages('leaflet')
 
 library(ggmap)
 library(maptools)
 library(broom)
 library(httr)
 library(rgdal)
+library(scales)
+
+if(!require(readr)) install.packages("readr")
+if(!require(dplyr)) install.packages("dplyr")
+if(!require(DT)) install.packages("DT")
+if(!require(ggrepel)) install.packages("ggrepel")
+if(!require(leaflet)) install.packages("leaflet")
 
 ```
-
+## Data Preprocessing
+### Read the data
+Load the data using readr and read_csv().
 # **Importing data**
-```{r message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # Import data
 NYcrime <- read.csv("NYPD_Complaint_Data_2017.csv", header=TRUE, stringsAsFactors = FALSE, na.strings = c("", "NA"))
 head(NYcrime)
 
+
+#new Data analysis
+path <- "C:\\Users\\patel\\Desktop\\SPS\\SPS_DATA_607\\final_project\\NYPD_Complaint_Data_Current__Year_To_Date_.csv"
+df <- read_csv(path)
+
+df_sub <- df[1:100,]  # display the first 100 rows
+df_sub$CMPLNT_FR_TM <- as.character(df_sub$CMPLNT_FR_TM) 
+head(df_sub)
+
+sprintf("Number of Rows in Dataframe: %s", format(nrow(df),big.mark = ","))
+
+### Preprocess Data  
+#The All-Caps text is difficult to read. Let's force the text in the appropriate columns into proper case.
+
+proper_case <- function(x) {
+  return (gsub("\\b([A-Z])([A-Z]+)", "\\U\\1\\L\\2" , x, perl=TRUE))
+}
+
+library(dplyr)
+df <- df %>% mutate(BORO_NM = proper_case(BORO_NM),
+                    JURIS_DESC = proper_case(JURIS_DESC),
+                    LAW_CAT_CD = proper_case(LAW_CAT_CD),
+                    LOC_OF_OCCUR_DESC = proper_case(LOC_OF_OCCUR_DESC),
+                    OFNS_DESC = proper_case(OFNS_DESC),
+                    PARKS_NM = proper_case(PARKS_NM),
+                    PATROL_BORO = proper_case(PATROL_BORO),
+                    PD_DESC = proper_case(PD_DESC),
+                    PREM_TYP_DESC = proper_case(PREM_TYP_DESC),
+                    CMPLNT_FR_TM = as.character(CMPLNT_FR_TM))
+df_sub <- df[1:100,]  # display the first 100 rows
+head(df_sub)
+```
+## Visualize Data
+### Crime across space
+Display crime incident locations on the map using leaflet. Click icons on the map to show incident details.
+```{r}
+library(leaflet)
+
+data <- df[1:20000,] # display the first 10,000 rows
+data$popup <- paste("<b>Incident #: </b>", data$CMPLNT_NUM, "<br>", "<b>Category: </b>", data$LAW_CAT_CD,
+                    "<br>", "<b>Offence Description: </b>", data$OFNS_DESC,
+                    "<br>", "<b>Day of week: </b>", data$DayOfWeek,
+                    "<br>", "<b>Date: </b>", data$CMPLNT_FR_DT,
+                    "<br>", "<b>Time: </b>", data$CMPLNT_FR_TM,
+                    "<br>", "<b>PD Case: </b>", data$PD_CD,
+                    "<br>", "<b>PD Description: </b>", data$PD_DESC,
+                    "<br>", "<b>Longitude: </b>", data$Longitude,
+                    "<br>", "<b>Latitude: </b>", data$Latitude)
+
+leaflet(data, width = "100%") %>% addTiles() %>%
+  addTiles(group = "OSM (default)") %>%
+  #addProviderTiles(provider = "Esri.WorldStreetMap",group = "World StreetMap") %>%
+  #addProviderTiles(provider = "Esri.WorldImagery",group = "World Imagery") %>%
+  # addProviderTiles(provider = "NASAGIBS.ViirsEarthAtNight2012",group = "Nighttime Imagery") %>%
+  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = data$popup, clusterOptions = markerClusterOptions()) %>%
+  addLayersControl(
+    baseGroups = c("OSM (default)","World StreetMap", "World Imagery"),
+    options = layersControlOptions(collapsed = FALSE)
+)
+
+```
+
+## Aggregate Data
+Summarize the data by incident category.
+```{r}
+df_category <- sort(table(df$LAW_CAT_CD),decreasing = TRUE)
+df_category <- data.frame(df_category[df_category > 5000])
+colnames(df_category) <- c("Category", "Frequency")
+df_category$Percentage <- df_category$Frequency / sum(df_category$Frequency)*100
+df_category
+```
+
+Create a bar plot based on the incident category.
+```{r, fig.width=10}
+library(ggplot2)
+library(ggrepel)
+bp<-ggplot(df_category, aes(x=Category, y=Frequency, fill=Category)) + geom_bar(stat="identity") + 
+  theme(axis.text.x=element_blank()) + geom_text_repel(data=df_category, aes(label=Category))
+bp
+```
+
+## Aggregate Data
+Summarize the data by incident category.
+```{r}
+df_OFNS_DESC <- sort(table(df$OFNS_DESC),decreasing = TRUE)
+df_OFNS_DESC <- data.frame(df_OFNS_DESC[df_OFNS_DESC > 3000])
+colnames(df_OFNS_DESC) <- c("Category", "Frequency")
+df_OFNS_DESC$Percentage <- df_OFNS_DESC$Frequency / sum(df_OFNS_DESC$Frequency)*100
+df_OFNS_DESC
+
+```
+
+
+Create a bar plot based on the incident category.
+```{r fig.width=10}
+library(ggplot2)
+library(ggrepel)
+ofns_cat<-ggplot(df_OFNS_DESC, aes(x=Category, y=Frequency, fill=Category)) + geom_bar(stat="identity") + 
+  theme(axis.text.x=element_blank()) + geom_text_repel(data=df_OFNS_DESC, aes(label=Category))
+ofns_cat
+```
+```{r}
+library(lubridate)
+library(stringr)
+
+data_dayOfWeek<-df
+data_dayOfWeek$CMPLNT_FR_DT <- as.Date(data_dayOfWeek$CMPLNT_FR_DT,format = "%m/%d/%Y")
+
+#data_dayOfWeek$day_of_week <- mdy(NYcrime_recent$CMPLNT_FR_DT)
+data_dayOfWeek$day_of_week<- wday(data_dayOfWeek$CMPLNT_FR_DT, label=TRUE)
+head(data_dayOfWeek)
+
+```
+### Theft Time Heatmap
+Aggregate counts of thefts by Day-of-Week and Time to create heat map. Fortunately, the Day-Of-Week part is pre-derived, but Hour is slightly harder.
+```{r}
+
+get_hour <- function(x) {
+  return (as.numeric(strsplit(x,":")[[1]][1]))
+}
+
+df_crime_time <- data_dayOfWeek %>%
+  mutate(Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
+  group_by(day_of_week, Hour) %>%
+  summarize(count = n())
+# df_theft_time %>% head(10)
+datatable(df_crime_time, options = list(scrollX='400px'))
+
+#Reorder and format Factors.
+
+dow_format <- c("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
+hour_format <- c(paste(c(12,1:11),"AM"), paste(c(12,1:11),"PM"))
+
+df_crime_time$day_of_week <- factor(df_crime_time$day_of_week, level = rev(dow_format))
+df_crime_time$Hour <- factor(df_crime_time$Hour, level = 0:23, label = hour_format)
+
+# df_theft_time %>% head(10)
+head(df_crime_time)
+```
+Create Time Heatmap
+
+```{r, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+plot <- ggplot(df_crime_time, aes(x = Hour, y = day_of_week, fill = count)) +geom_tile() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = element_blank(), legend.position="top", legend.direction="horizontal", legend.key.width=unit(2, "cm"), legend.key.height=unit(0.25, "cm"), legend.margin=unit(-0.5,"cm"), panel.margin=element_blank()) +
+  labs(x = "Hour of crime (Local Time)", y = "Day of Week", title = "Number of crime in Crime reported by Time") +
+  scale_fill_gradient(low = "white", high = "#FF0000", labels = comma)
+  
+plot
+```
+
+```{r}
+
+data_Felony<-filter(data_dayOfWeek, LAW_CAT_CD == "Felony")
+head(data_Felony)
+
+df_Felony_time <- data_Felony %>%
+  mutate(Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
+  group_by(day_of_week, Hour) %>%
+  summarize(count = n())
+# df_theft_time %>% head(10)
+head(df_Felony_time)
+
+#Reorder and format Factors.
+
+dow_format <- c("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
+hour_format <- c(paste(c(12,1:11),"AM"), paste(c(12,1:11),"PM"))
+
+df_Felony_time$day_of_week <- factor(df_Felony_time$day_of_week, level = rev(dow_format))
+df_Felony_time$Hour <- factor(df_Felony_time$Hour, level = 0:23, label = hour_format)
+
+head(df_Felony_time)
+```
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=10}
+
+felony_plot <- ggplot(df_Felony_time, aes(x = Hour, y = day_of_week, fill = count)) +geom_tile() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = element_blank(), legend.position="top", legend.direction="horizontal", legend.key.width=unit(2, "cm"), legend.key.height=unit(0.25, "cm"), legend.margin=unit(-0.5,"cm"), panel.margin=element_blank()) +
+  labs(x = "Hour of Felony (Local Time)", y = "Day of Week", title = "Number of Felony reported by Time") +
+  scale_fill_gradient(low = "white", high = "#FF0000", labels = comma)
+  
+felony_plot
+```
+
+```{r}
+
+df_heat_time <- data_dayOfWeek 
+
+df_heat_time <- df_heat_time %>%
+  filter(!is.na(CMPLNT_FR_TM)) 
+
+df_heat_time$Hour <- unlist(lapply(df_heat_time$CMPLNT_FR_TM, function (x) strsplit(as.character(x), ":", fixed=TRUE)[[1]][1]))
+
+hour_format <- c(paste(c(12,1:11),"AM"), paste(c(12,1:11),"PM"))
+
+df_heat_time$Hour  <- factor(df_heat_time$Hour , level = 0:23, label = hour_format)
+df_heat_time$day_of_week <- as.factor(df_heat_time$day_of_week)
+df_heat_time$OFNS_DESC <- as.factor(df_heat_time$OFNS_DESC)
+
+
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+
+data_Misdemeanor<-filter(data_dayOfWeek, LAW_CAT_CD == "Misdemeanor")
+head(data_Misdemeanor)
+
+df_Misdemeanor_time <- data_Misdemeanor %>%
+  mutate(Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
+  group_by(day_of_week, Hour) %>%
+  summarize(count = n())
+# df_theft_time %>% head(10)
+
+#Reorder and format Factors.
+
+dow_format <- c("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
+hour_format <- c(paste(c(12,1:11),"AM"), paste(c(12,1:11),"PM"))
+
+df_Misdemeanor_time$day_of_week <- factor(df_Misdemeanor_time$day_of_week, level = rev(dow_format))
+df_Misdemeanor_time$Hour <- factor(df_Misdemeanor_time$Hour, level = 0:23, label = hour_format)
+
+# df_theft_time %>% head(10)
+head(df_Misdemeanor_time)
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=5}
+
+Misdemeanor_time_plot <- ggplot(df_Misdemeanor_time, aes(x = Hour, y = day_of_week, fill = count)) +geom_tile() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = element_blank(), legend.position="top", legend.direction="horizontal", legend.key.width=unit(2, "cm"), legend.key.height=unit(0.25, "cm"), legend.margin=unit(-0.5,"cm"), panel.margin=element_blank()) +
+  labs(x = "Hour of Misdemeanor (Local Time)", y = "Day of Week", title = "Number of Misdemeanor reported by Time") +
+  scale_fill_gradient(low = "white", high = "#FF0000", labels = comma)
+  
+Misdemeanor_time_plot 
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+data_Violation<-filter(data_dayOfWeek, LAW_CAT_CD == "Violation")
+head(data_Violation)
+
+df_Violation_time <- data_Violation %>%
+  mutate(Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
+  group_by(day_of_week, Hour) %>%
+  summarize(count = n())
+# df_theft_time %>% head(10)
+head(df_Violation_time)
+
+#Reorder and format Factors.
+
+dow_format <- c("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
+hour_format <- c(paste(c(12,1:11),"AM"), paste(c(12,1:11),"PM"))
+
+df_Violation_time$day_of_week <- factor(df_Violation_time$day_of_week, level = rev(dow_format))
+df_Violation_time$Hour <- factor(df_Violation_time$Hour, level = 0:23, label = hour_format)
+
+# df_theft_time %>% head(10)
+head(df_Violation_time)
+```
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=5}
+
+Violation_time_plot <- ggplot(df_Violation_time, aes(x = Hour, y = day_of_week, fill = count)) +geom_tile() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = element_blank(), legend.position="top", legend.direction="horizontal", legend.key.width=unit(2, "cm"), legend.key.height=unit(0.25, "cm"), legend.margin=unit(-0.5,"cm"), panel.margin=element_blank()) +
+  labs(x = "Hour of Violation (Local Time)", y = "Day of Week", title = "Number of Violation reported by Time") +
+  scale_fill_gradient(low = "white", high = "#FF0000", labels = comma)
+  
+Violation_time_plot  
+```
+
+### Factor by Month
+
+If crime is tied to activities, the period at which activies end may impact.
+```{r, fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+df_report_time_month <- data_dayOfWeek %>%
+  mutate(Month = format(as.Date(CMPLNT_FR_DT, "%m/%d/%Y"), "%B"), Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
+  group_by(Month, day_of_week, Hour) %>% 
+  summarize(count = n()) %>%
+  group_by(Month) %>%
+  mutate(norm = count/sum(count))
+head(df_report_time_month)
+
+
+
+df_report_time_month$day_of_week <- factor(df_report_time_month$day_of_week, level = rev(dow_format))
+df_report_time_month$Hour <- factor(df_report_time_month$Hour, level = 0:23, label = hour_format)
+# Set order of month facets by chronological order instead of alphabetical
+df_report_time_month$Month <- factor(df_report_time_month$Month, level = c("January","February","March","April","May","June","July","August","September","October","November","December"))
+
+plot <- ggplot(df_report_time_month, aes(x = Hour, y = day_of_week, fill = count)) +
+  geom_tile() +
+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.6, size = 4)) +
+  labs(x = "Hour of Arrest (Local Time)", y = "Day of Week", title = "Reported Crime 2018 by Time and, Normalized by Month") +
+  scale_fill_gradient(low = "White", high = "#FF0000") +
+  facet_wrap(~ Month, nrow = 6)
+plot
 ```
 
 #cleaning data
@@ -49,12 +357,14 @@ NYcrime <- NYcrime %>%
   filter(!is.na(BORO_NM))
 
 
+
 borobp <- ggplot(NYcrime, aes(x = BORO_NM, fill=as.factor(BORO_NM))) + 
                 geom_bar(width=0.9, stat="count") + 
                 theme(legend.position="none") + 
                 coord_flip()
+
 borobp 
-NYcrime
+
 
 boro.totals <- data.frame(table(NYcrime$BORO_NM))
 
@@ -76,34 +386,26 @@ scaled.boro.bp <- ggplot(boro.totals, aes(x= Borough, y = Freq, fill = as.factor
 scaled.boro.bp
 
 ```
+
 ```{r}
+library(lubridate)
+library(stringr)
+#NYcrime_recent$CMPLNT_FR_DT <- as.Date(NYcrime_recent$CMPLNT_FR_DT,format = "%m/%d/%Y")
 
-frequencies <- data.frame(table(NYcrime$OFNS_DESC))
+#NYcrime_recent <- NYcrime_recent %>%
+#  filter(!is.na(CMPLNT_FR_DT)) 
 
-names(frequencies)[1] <- "Crime"
-
-frequencies <- frequencies[order(-frequencies$Freq),]
-
-top10<- head(frequencies, n=10)
-top10
-
-frequencies$OrderedCrime <- reorder(frequencies$Crime, frequencies$Freq)
-ofns.freqbp <- ggplot(frequencies, aes(x=OrderedCrime, y=Freq, fill=Freq)) +
-
-  geom_bar(width=1, stat="identity") + ggtitle("OFNS.DESC Tags by Frequency") +
-
-  coord_flip()
-
-ofns.freqbp
-
-
+#NYcrime_recent$day_of_week <- mdy(NYcrime_recent$CMPLNT_FR_DT)
+#NYcrime_recent$day_of_week<- wday(NYcrime_recent$CMPLNT_FR_DT, label=TRUE)
+#head(NYcrime_recent)
 
 ```
+
 
 ```{r}
 NYcrime$OFNS_DESC <- as.factor(NYcrime$OFNS_DESC)
   
-NYcrime_map <- NYcrime %>%
+NYcrime_map <- NYcrime%>%
   select(CMPLNT_NUM,BORO_NM,CMPLNT_FR_DT,LAW_CAT_CD,OFNS_DESC,VIC_RACE, VIC_SEX, Latitude,Longitude)%>%
   filter(OFNS_DESC=="GRAND LARCENY" | OFNS_DESC=="PETIT LARCENY" | OFNS_DESC=="HARRASSMENT 2"	| OFNS_DESC=="CRIMINAL MISCHIEF & RELATED OF" | OFNS_DESC=="OFF. AGNST PUB ORD SENSBLTY &" | OFNS_DESC== "THEFT-FRAUDS" | OFNS_DESC=="SEX CRIMES" | OFNS_DESC== "ASSAULT 3 & RELATED OFFENSES" | OFNS_DESC=="MISCELLANEOUS PENAL LAW" | OFNS_DESC== "FRAUDS")
 NYcrime_map
@@ -115,31 +417,35 @@ Queens_map
 
 
 ```
+```{r}
+data_queens<-filter(data_dayOfWeek, BORO_NM == "Queens")
+head(data_queens)
 
-```{r fig.align = "center", fig.width=10, fig.height=10}
-library("ggmap")
-
-nyc <- c(left = -74.39, bottom = 40.4825, right = -73.49, top = 41.13)
-map <- get_stamenmap(nyc, maptype = "toner-lite")
-v<- ggmap(map)+
-     geom_point(data=NYcrime_map, aes(x=Longitude, y=Latitude, color=factor(NYcrime_map$OFNS_DESC)), alpha=0.05) +
-     guides(colour = guide_legend(override.aes = list(alpha=1.0, size=1.0),
-                                  title="Type of Crime")) +
-     scale_colour_brewer(type="qual",palette="Paired") + 
-     ggtitle("Top Crimes in NYC") +
-     theme_light(base_size=10) +
-     theme(axis.line=element_blank(),
-           axis.text.x=element_blank(),
-           axis.text.y=element_blank(),
-           axis.ticks=element_blank(),
-           axis.title.x=element_blank(),
-           axis.title.y=element_blank())
-ggsave("NYC_top_crimes_map.png", v, width=14, height=10, units="in")
-
-v
+queens_OFNS_DESC <- sort(table(data_queens$OFNS_DESC),decreasing = TRUE)
+queens_OFNS_DESC <- data.frame(queens_OFNS_DESC[queens_OFNS_DESC > 2000])
+colnames(queens_OFNS_DESC) <- c("Category", "Frequency")
+queens_OFNS_DESC$Percentage <- queens_OFNS_DESC$Frequency / sum(queens_OFNS_DESC$Frequency)*100
+queens_OFNS_DESC
 ```
+
+
 ```{r fig.align = "center", fig.width=10, fig.height=7}
 #queens 
+leaflet(data_queens, width = "100%") %>% addTiles() %>%
+  addTiles(group = "OSM (default)") %>%
+  #addProviderTiles(provider = "Esri.WorldStreetMap",group = "World StreetMap") %>%
+  #addProviderTiles(provider = "Esri.WorldImagery",group = "World Imagery") %>%
+   addProviderTiles(provider = "NASAGIBS.ViirsEarthAtNight2012",group = "Nighttime Imagery") %>%
+  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = data$popup, clusterOptions = markerClusterOptions()) %>%
+  addLayersControl(
+    baseGroups = c("OSM (default)","World StreetMap", "Nighttime Imagery"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+```
+
+
+
 Queen <- c(left = -74.1, bottom = 40.46, right = -73.60, top = 40.84)
 map <- get_stamenmap(Queen, maptype = "toner-lite")
 Queen_map<- ggmap(map)+
@@ -202,7 +508,7 @@ Bronx_Map<- ggmap(map)+
      guides(colour = guide_legend(override.aes = list(alpha=1, size=5),
                                   title="Type of Crime")) +
      scale_colour_brewer(type="qual",palette="Paired") + 
-     ggtitle("Top Crimes in Brooklyn") +
+     ggtitle("Top Crimes in BRONX") +
      theme_light(base_size=10) +
      theme(axis.line=element_blank(),
            axis.text.x=element_blank(),
@@ -227,7 +533,7 @@ MANHATTAN_Map<- ggmap(map)+
      guides(colour = guide_legend(override.aes = list(alpha=1, size=5),
                                   title="Type of Crime")) +
      scale_colour_brewer(type="qual",palette="Paired") + 
-     ggtitle("Top Crimes in Brooklyn") +
+     ggtitle("Top Crimes in Manhattan") +
      theme_light(base_size=10) +
      theme(axis.line=element_blank(),
            axis.text.x=element_blank(),
