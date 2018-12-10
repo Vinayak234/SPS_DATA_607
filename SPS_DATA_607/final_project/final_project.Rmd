@@ -14,27 +14,27 @@ output:
 #**Abstract**#
 The current project is aimed to explore the crime rate in the current year. The dataset used in this project is found in this link which is provided by New York Police Department
 
+# **Data Source**
+NYPD Complaint Data Current (Year To Date)
+link: https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243
+
+Data Last Updated: October 24, 2018
+Data Provided by: Police Department (NYPD)
+
+This is a breakdown of every criminal complaint report filed in NYC by the NYPD  for the current calendar year. This data is manually extracted every quarter and reviewed by the Office of Management Analysis and Planning.  Each record represents a criminal complaint in NYC and includes information abot the type of crime, the location and time of enforcement. In addition, information related to victim and suspect demographics is also included. 
+
 
 # **Required Packages/libraries**
 ```{r, warning=FALSE, message=FALSE}
 if (!require('ggplot2')) install.packages('ggplot2')
-if (!require('gridExtra')) install.packages('gridExtra')
 if (!require('dplyr')) install.packages('dplyr')
 if (!require('leaflet')) install.packages('leaflet')
 if (!require('scales')) install.packages('scales')
 if (!require('readr')) install.packages('readr')
-if (!require('dplyr')) install.packages('dplyr')
 if (!require('ggmap')) install.packages('ggmap')
-if (!require('RgoogleMaps')) install.packages('RgoogleMaps')
-if (!require('tigris')) install.packages('tigris')
-if(!require('leaflet')) install.packages('leaflet')
-if(!require(ggrepel)) install.packages("ggrepel")
-library(maptools)
-library(broom)
-library(httr)
-library(rgdal)
-
-
+if(!require('ggrepel')) install.packages("ggrepel")
+library(lubridate)
+library(stringr)
 
 ```
 # Data Preprocessing
@@ -44,13 +44,12 @@ Load the data using readr and read_csv().
 #**Importing data**
 ```{r, message=FALSE, warning=FALSE}
 # Import data
-
 path <- "C:\\Users\\patel\\Desktop\\SPS\\SPS_DATA_607\\final_project\\NYPD_Complaint_Data_Current__Year_To_Date_.csv"
 df <- read_csv(path)
 
 df_sub <- df[1:100,]  # display the first 100 rows
 df_sub$CMPLNT_FR_TM <- as.character(df_sub$CMPLNT_FR_TM) 
-head(df_sub)
+df_sub
 
 sprintf("Number of Rows in Dataframe: %s", format(nrow(df),big.mark = ","))
 ```
@@ -74,12 +73,18 @@ df <- df %>% mutate(BORO_NM = proper_case(BORO_NM),
                     CMPLNT_FR_TM = as.character(CMPLNT_FR_TM))
 df_sub <- df[1:100,]  # display the first 100 rows
 df_sub
+
+# add column Day of week. 
+data_dayOfWeek<-df
+data_dayOfWeek$CMPLNT_FR_DT <- as.Date(data_dayOfWeek$CMPLNT_FR_DT,format = "%m/%d/%Y")
+data_dayOfWeek$day_of_week<- wday(data_dayOfWeek$CMPLNT_FR_DT, label=TRUE)
+
 ```
+
 ## Visualize Data
 ### Crime across space
 Display crime incident locations on the map using leaflet. Click icons on the map to show incident details.
 ```{r}
-library(leaflet)
 
 data <- df[1:30000,] # display the first 10,000 rows
 data$popup <- paste("<b>Incident #: </b>", data$CMPLNT_NUM, "<br>", "<b>Category: </b>", data$LAW_CAT_CD,
@@ -116,12 +121,12 @@ df_category
 
 Create a bar plot based on the incident category.
 ```{r, fig.width=10}
-library(ggplot2)
-library(ggrepel)
+
 bp<-ggplot(df_category, aes(x=Category, y=Frequency, fill=Category)) + geom_bar(stat="identity") + 
   theme(axis.text.x=element_blank()) + geom_text_repel(data=df_category, aes(label=Category))
 bp
 ```
+**Result: The most crime occurend in 2018 is Misdemeanor around 55 percents. second, Felony	is around 29.93 percent. At last, violation is around 15 percent.  
 
 ## Aggregate Data
 Summarize the data by incident category.
@@ -136,18 +141,13 @@ df_OFNS_DESC
 
 Create a bar plot based on the incident category.
 ```{r fig.width=10}
-library(ggplot2)
-library(ggrepel)
 ofns_cat<-ggplot(df_OFNS_DESC, aes(x=Category, y=Frequency, fill=Category)) + geom_bar(stat="identity") + 
   theme(axis.text.x=element_blank()) + geom_text_repel(data=df_OFNS_DESC, aes(label=Category))
 ofns_cat
 ```
-
+**Result: Petit Larceny	is crime occured most in New York City, followed by Harrassment and Assault & Related Offenses	19.70%,  	16.48%, and 12.67 % respectivity. **	
 
 ```{r, message=FALSE, warning=FALSE}
-library(lubridate)
-library(stringr)
-
 data_dayOfWeek<-df
 data_dayOfWeek$CMPLNT_FR_DT <- as.Date(data_dayOfWeek$CMPLNT_FR_DT,format = "%m/%d/%Y")
 data_dayOfWeek$day_of_week<- wday(data_dayOfWeek$CMPLNT_FR_DT, label=TRUE)
@@ -175,7 +175,7 @@ df_crime_time$Hour <- factor(df_crime_time$Hour, level = 0:23, label = hour_form
 
 head(df_crime_time)
 ```
-
+**RESULT: Here, I am  trying to find crime occured by time. so I converted report 24hour into 12h clock. I count the crime occured based on the hour **
 #Create Time Heatmap
 
 ```{r, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
@@ -186,9 +186,11 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = elemen
   
 plot
 ```
+**Analysis: The purpose was to create heatmap to find out time and day of week were most crime occured. As heatmap, It is clear that there is huge amount of crime occured between 3PM and 6PM. Results also suggest that Friday is also popular among the criminal  **
 
+#Analysis 
+I am trying to find out when most felony occured in New York city area. 
 ```{r}
-
 data_Felony<-filter(data_dayOfWeek, LAW_CAT_CD == "Felony")
 head(data_Felony)
 
@@ -196,17 +198,14 @@ df_Felony_time <- data_Felony %>%
   mutate(Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
   group_by(day_of_week, Hour) %>%
   summarize(count = n())
-head(df_Felony_time)
 
 #Reorder and format Factors.
-
 dow_format <- c("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
 hour_format <- c(paste(c(12,1:11),"AM"), paste(c(12,1:11),"PM"))
 
 df_Felony_time$day_of_week <- factor(df_Felony_time$day_of_week, level = rev(dow_format))
 df_Felony_time$Hour <- factor(df_Felony_time$Hour, level = 0:23, label = hour_format)
 
-head(df_Felony_time)
 ```
 
 
@@ -219,23 +218,7 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = elemen
   
 felony_plot
 ```
-
-```{r}
-
-df_heat_time <- data_dayOfWeek 
-
-df_heat_time <- df_heat_time %>%
-  filter(!is.na(CMPLNT_FR_TM)) 
-
-df_heat_time$Hour <- unlist(lapply(df_heat_time$CMPLNT_FR_TM, function (x) strsplit(as.character(x), ":", fixed=TRUE)[[1]][1]))
-
-hour_format <- c(paste(c(12,1:11),"AM"), paste(c(12,1:11),"PM"))
-
-df_heat_time$Hour  <- factor(df_heat_time$Hour , level = 0:23, label = hour_format)
-df_heat_time$day_of_week <- as.factor(df_heat_time$day_of_week)
-df_heat_time$OFNS_DESC <- as.factor(df_heat_time$OFNS_DESC)
-
-```
+**As heatmap, It is clear that there is huge amount of felony occured 12AM and 12PM. There is more felony happen at saturday at 12AM. Also there is some felony occured on friday between 4PM TO 6PM. **
 
 
 ```{r, message=FALSE, warning=FALSE}
@@ -268,6 +251,7 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = elemen
   
 Misdemeanor_time_plot 
 ```
+**Analysis: The purpose was to create heatmap to find out time and day of week were most crime occured. As heatmap, It is clear that there is huge amount of crime occured between 3PM and 6PM. Results also suggest that Friday is also popular among the criminal  **
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -278,8 +262,6 @@ df_Violation_time <- data_Violation %>%
   mutate(Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
   group_by(day_of_week, Hour) %>%
   summarize(count = n())
-
-head(df_Violation_time)
 
 #Reorder and format Factors.
 
@@ -302,10 +284,12 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.6), legend.title = elemen
   
 Violation_time_plot  
 ```
+**Analysis: The purpose was to create heatmap to find out time and day of week were most Violation occured. As heatmap, It is clear that there is huge amount of Violation occured at 3PM on Thursday  **
 
 ### Factor by Month
-
 If crime is tied to activities, the period at which activies end may impact.
+I want to findout crime by month now. 
+
 ```{r, fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
 df_report_time_month <- data_dayOfWeek %>%
   mutate(Month = format(as.Date(CMPLNT_FR_DT, "%m/%d/%Y"), "%B"), Hour = sapply(CMPLNT_FR_TM, get_hour)) %>%
@@ -314,7 +298,6 @@ df_report_time_month <- data_dayOfWeek %>%
   group_by(Month) %>%
   mutate(norm = count/sum(count))
 head(df_report_time_month)
-
 
 
 df_report_time_month$day_of_week <- factor(df_report_time_month$day_of_week, level = rev(dow_format))
@@ -332,9 +315,9 @@ plot <- ggplot(df_report_time_month, aes(x = Hour, y = day_of_week, fill = count
 plot
 ```
 
-#cleaning data
+**Error: Result wasn't that i was expect. I forgot that I choose the dataset was this year and dataset doesn't include reported crime after JUNE 2018. There are some records of JUNE to December but That data was from 2017 because these crime updated recently it includes in this dataset**
 
-
+**there is huge spiked at January's Monday at 12PM **
 ```{r, message=FALSE, warning=FALSE}
 data_dayOfWeek <- data_dayOfWeek %>%
   filter(!is.na(BORO_NM))
@@ -345,13 +328,15 @@ borobp <- ggplot(data_dayOfWeek, aes(x = BORO_NM, fill=as.factor(BORO_NM))) +
                 coord_flip()
 
 borobp 
-
-
 boro.totals <- data.frame(table(data_dayOfWeek$BORO_NM))
 
 names(boro.totals)[1] <- "Borough"
 
 boro.totals
+```
+**There are many crime happen in brooklyn county around 67489 than Manhattan around 56700**
+```{r, message=FALSE, warning=FALSE}
+
 
 # NYC.gov has 2017 estimates at: 1471160, 2648771, 1664727, 2358582, and 479458 for BX, BK, MH, QN, and SI respectively.
 
@@ -367,7 +352,7 @@ scaled.boro.bp <- ggplot(boro.totals, aes(x= Borough, y = Freq, fill = as.factor
 scaled.boro.bp
 
 ```
-
+**Result crime record per capita sugests that queens is safe borough in New York City.   **
 
 ```{r, message=FALSE, warning=FALSE}
 data_dayOfWeek$OFNS_DESC <- as.factor(data_dayOfWeek$OFNS_DESC)
@@ -377,15 +362,10 @@ data_dayOfWeek_map <- data_dayOfWeek%>%
   filter(OFNS_DESC=="Grand Larceny" | OFNS_DESC=="Petit Larceny" | OFNS_DESC=="Harrassment 2"	| OFNS_DESC=="Criminal Mischief & Related Of" | OFNS_DESC== "Theft-Fraud" | OFNS_DESC=="Sex Crimes" | OFNS_DESC== "Assault 3 & Related Offenses" | OFNS_DESC=="Miscellaneous Penal Law" | OFNS_DESC== "Frauds")
 
 data_dayOfWeek_map
-
-Queens_map<- data_dayOfWeek_map%>%
-  filter(BORO_NM == "Queens")%>% 
-  group_by(OFNS_DESC)
-Queens_map
-
 ```
 
-
+# QUEENS
+## DATA
 ```{r, message=FALSE, warning=FALSE}
 data_queens<-filter(data_dayOfWeek_map, BORO_NM == "Queens")
 head(data_queens)
@@ -397,6 +377,7 @@ queens_OFNS_DESC$Percentage <- queens_OFNS_DESC$Frequency / sum(queens_OFNS_DESC
 queens_OFNS_DESC
 ```
 
+## GRAPH
 
 ```{r fig.align = "center", fig.width=10, fig.height=7}
 #queens 
@@ -412,7 +393,10 @@ leaflet(data_queens, width = "100%") %>% addTiles() %>%
   )
 
 ```
+**RESULT: According to result, Queens has Petit Larceny is popular crime reported like overall New York area. Petit Larceny reported 26.15 percents and Harrassment 25.09165 percent**
 
+# BROOKLYN
+## DATA
 ```{r, message=FALSE, warning=FALSE}
 data_Brooklyn<-filter(data_dayOfWeek_map, BORO_NM == "Brooklyn")
 head(data_Brooklyn)
@@ -423,7 +407,7 @@ colnames(brooklyn_OFNS_DESC) <- c("Category", "Frequency")
 brooklyn_OFNS_DESC$Percentage <- brooklyn_OFNS_DESC$Frequency / sum(brooklyn_OFNS_DESC$Frequency)*100
 brooklyn_OFNS_DESC
 ```
-
+## GRAPH
 ```{r fig.align = "center", fig.width=10, fig.height=7}
 
 BROOKLYN <- c(left = -74.04, bottom = 40.56, right = -73.85, top = 40.742)
@@ -445,8 +429,11 @@ BROOKLYN_Map<- ggmap(map)+
 BROOKLYN_Map
 
 ```
+**RESULT: According to result, Brooklyn has Petit Larceny is popular crime reported like Queens. Petit Larceny reported 26.15 percents and Harrassment 22.70 percent. There is 1100 cases difference between Petit Larceny and Harrassment. **
 
+# BRONX
 
+## DATA
 ```{r, message=FALSE, warning=FALSE}
 data_Bronx<-filter(data_dayOfWeek_map, BORO_NM == "Bronx")
 head(data_Bronx)
@@ -457,7 +444,7 @@ colnames(bronx_OFNS_DESC) <- c("Category", "Frequency")
 bronx_OFNS_DESC$Percentage <- bronx_OFNS_DESC$Frequency / sum(bronx_OFNS_DESC$Frequency)*100
 bronx_OFNS_DESC
 ```
-
+## GRAPH
 
 ```{r fig.align = "center", fig.width=10, fig.height=7}
 BRONX <- c(left = -73.96, bottom = 40.74, right = -73.69, top = 40.95)
@@ -478,8 +465,10 @@ Bronx_Map<- ggmap(map)+
            axis.title.y=element_blank())
 Bronx_Map
 ```
+**RESULT: Unlike, New York. The result are different than expected. There are more Harassment insidents than Petit Larceny. There is  25.90 percent Harrassment cases reported and 	23.82 percent Petit Larceny.**
 
-
+## MANHATTAN
+## DATA
 
 ```{r, message=FALSE, warning=FALSE}
 data_Manhattan<-filter(data_dayOfWeek_map, BORO_NM == "Manhattan")
@@ -491,7 +480,7 @@ colnames(Manhattan_OFNS_DESC) <- c("Category", "Frequency")
 Manhattan_OFNS_DESC$Percentage <- Manhattan_OFNS_DESC$Frequency / sum(Manhattan_OFNS_DESC$Frequency)*100
 Manhattan_OFNS_DESC
 ```
-
+## GRAPH
 
 ```{r fig.align = "center", fig.width=10, fig.height=7}
 MANHATTAN <- c(left = -74.09, bottom = 40.69, right = -73.83, top = 40.89)
@@ -512,4 +501,47 @@ MANHATTAN_Map<- ggmap(map)+
            axis.title.y=element_blank())
 MANHATTAN_Map
 ```
+**RESULT: According to result, Manhattan has Petit Larceny is popular crime reported with 34.587 percents And Harrassment is second popular with 20 percent. There is mpre than 5000 cases difference between Petit Larceny and Harrassment in the Manhattan area. **
 
+
+# Staten Island 
+## DATA
+
+```{r, message=FALSE, warning=FALSE}
+data_SIsland<-filter(data_dayOfWeek_map, BORO_NM == "Staten Island")
+head(data_SIsland)
+
+S_Island_OFNS_DESC <- sort(table(data_SIsland$OFNS_DESC),decreasing = TRUE)
+S_Island_OFNS_DESC <- data.frame(S_Island_OFNS_DESC[S_Island_OFNS_DESC > 200])
+colnames(S_Island_OFNS_DESC) <- c("Category", "Frequency")
+S_Island_OFNS_DESC$Percentage <- S_Island_OFNS_DESC$Frequency / sum(S_Island_OFNS_DESC$Frequency)*100
+S_Island_OFNS_DESC
+```
+## GRAPH
+
+```{r fig.align = "center", fig.width=10, fig.height=7}
+Staten_Island <- c(left = -74.35, bottom = 40.45, right = -73.85, top = 40.70)
+map <- get_stamenmap(Staten_Island, maptype = "toner-lite")
+
+Staten_Island_Map<- ggmap(map)+
+     geom_point(data=data_SIsland, aes(x=Longitude, y=Latitude, color=factor(data_SIsland$OFNS_DESC)), alpha=1.0) +
+     guides(colour = guide_legend(override.aes = list(alpha=1, size=5),
+                                  title="Type of Crime")) +
+     scale_colour_brewer(type="qual",palette="Paired") + 
+     ggtitle("Top Crimes in Manhattan") +
+     theme_light(base_size=10) +
+     theme(axis.line=element_blank(),
+           axis.text.x=element_blank(),
+           axis.text.y=element_blank(),
+           axis.ticks=element_blank(),
+           axis.title.x=element_blank(),
+           axis.title.y=element_blank())
+Staten_Island_Map
+```
+**RESULT: Unlike, New York. The result are different than expected. There are more Harassment insidents than Petit Larceny in Staten Island. There is  31.60 percent Harrassment cases reported and 	21.68 percent Petit Larceny.**
+
+
+# **Reference** 
+1. The R-Graph Gallery For likert type Chart [LINK] https://www.r-graph-gallery.com/202-barplot-for-likert-type-items/
+2. NYPD Complaint Data Current (Year To Date) [LINK] https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Current-Year-To-Date-/5uac-w243
+3. 
